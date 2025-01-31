@@ -1,9 +1,9 @@
 <template>
   <h1>Hello World</h1>
   <div>
-    <p>{{ error }}</p>
-    <p>{{ decodedText }}</p>
-    <qrcode-stream @init="onInit" @decode="onDecode"/>
+    <p v-if="error" class="error">{{ error }}</p>
+    <p v-if="decodedText">Scanned Result: {{ decodedText }}</p>
+    <qrcode-stream @init="onInit" @decode="onDecode" :track="{ facingMode: 'environment' }" class="qr-scanner"/>
   </div>
 </template>
 
@@ -20,29 +20,46 @@ export default {
     }
   },
   methods: {
-    async onInit( promise){
-      console.log(promise);
-
+    async onInit(promise) {
+      this.error = ''; // Clear any previous errors
+      
       try {
-        const { capabilities } = await promise;
-        console.log(capabilities);
+        await promise;
       } catch (error) {
         if(error.name === 'NotAllowedError'){
-          console.log('Camera is not allowed');
+          this.error = 'Error: Camera permission denied';
         } else if(error.name === 'NotFoundError'){
-          console.log('No camera found');
+          this.error = 'Error: No camera found';
         } else if(error.name === 'NotSupportedError'){
-          console.log('Camera is not supported');
+          this.error = 'Error: Camera not supported';
         } else if(error.name === 'NotReadableError'){
-          console.log('Camera is not readable');
+          this.error = 'Error: Camera not readable';
+        } else {
+          this.error = `Error: ${error.message}`;
         }
-        console.error(error);
       }
-
     },
-    onDecode(decodedText){
-      this.decodedText = decodedText;
+    onDecode(decodedText) {
+      try {
+        this.error = ''; // Clear any previous errors
+        this.decodedText = decodedText;
+        console.log('Decoded text:', decodedText); // For debugging
+      } catch (error) {
+        this.error = `Decoding error: ${error.message}`;
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+.qr-scanner {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+}
+
+.error {
+  color: red;
+}
+</style>
