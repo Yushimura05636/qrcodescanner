@@ -21,11 +21,14 @@
         </tr>
         <tr v-else v-for="person in people" :key="person.id" class="table-secondary">
           <td scope="row" class="gender-cell">
-            <img 
-              :src="getGenderImage(person.gender)" 
-              :alt="person.gender"
-              class="gender-icon"
-            >
+            <div class="gender-container">
+              <img 
+                :src="getGenderImage(person.gender)" 
+                :alt="person.gender"
+                class="gender-icon"
+              >
+              <span class="gender-text">{{ capitalizeFirstLetter(person.gender) }}</span>
+            </div>
           </td>
           <td scope="row">{{ person.firstname }}</td>
           <td scope="row">{{ person.lastname }}</td>
@@ -110,6 +113,10 @@ export default {
     getGenderImage(gender) {
       const lowerGender = gender?.toLowerCase() || 'male';
       return this.genderImages[lowerGender] || this.genderImages.male;
+    },
+    capitalizeFirstLetter(string) {
+      if (!string) return '';
+      return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
   },
   async mounted() {
@@ -211,6 +218,14 @@ td {
 .gender-cell {
   text-align: center;
   vertical-align: middle !important;
+  min-width: 120px;
+}
+
+.gender-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .gender-icon {
@@ -225,5 +240,11 @@ td {
 .gender-icon:hover {
   transform: scale(1.1);
   border-color: #4CAF50;
+}
+
+.gender-text {
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 500;
 }
 </style>
