@@ -3,15 +3,21 @@
     <h2>QR Code Scanner</h2>
     <div id="reader"></div>
     <div v-if="error" class="error-message">{{ error }}</div>
-    <div v-if="scannedResult" class="success-message">
-      <h3>Scanned Successfully!</h3>
-      <p>Result: {{ scannedResult }}</p>
+    <div v-if="userData" class="success-message">
+      <h3>User Details Found!</h3>
+      <div class="user-details">
+        <p><strong>Name:</strong> {{ userData.firstname }} {{ userData.lastname }}</p>
+        <p><strong>Email:</strong> {{ userData.email }}</p>
+        <p><strong>Phone:</strong> {{ userData.phone }}</p>
+        <p><strong>QR Code:</strong> {{ userData.qr_code }}</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { Html5Qrcode } from "html5-qrcode"
+import axios from 'axios'
 
 export default {
   name: 'QrScanner',
@@ -19,7 +25,8 @@ export default {
     return {
       html5QrCode: null,
       error: '',
-      scannedResult: null
+      scannedResult: null,
+      userData: null
     }
   },
   mounted() {
@@ -56,9 +63,25 @@ export default {
         this.error = `Error starting scanner: ${error}`
       })
     },
-    onScanSuccess(decodedText) {
+    async onScanSuccess(decodedText) {
       this.scannedResult = decodedText
       console.log('QR Code detected:', decodedText)
+      
+      try {
+        const response = await axios.get(`https://qrscannerdb-production.up.railway.app/api/call/${decodedText}`);
+        
+        if (response.data) {
+          this.userData = response.data;
+          this.error = '';
+        } else {
+          this.error = 'No user found';
+          this.userData = null;
+        }
+      } catch (error) {
+        this.error = 'No user found';
+        this.userData = null;
+        console.error('Error:', error);
+      }
       
       // Stop scanning after successful scan
       if (this.html5QrCode) {
@@ -107,14 +130,26 @@ h2 {
 
 .success-message {
   margin-top: 1rem;
-  padding: 0.75rem;
+  padding: 1rem;
   background-color: #ecfdf5;
   color: #047857;
   border-radius: 4px;
-  text-align: center;
+  text-align: left;
 }
 
 .success-message h3 {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.user-details p {
+  margin: 8px 0;
+  padding: 8px;
+  background-color: #f8fafc;
+  border-radius: 4px;
+}
+
+.user-details strong {
+  color: #065f46;
 }
 </style>
