@@ -332,7 +332,7 @@ export default {
         if (response.ok) {
           this.showSuccess = true
           setTimeout(() => {
-            this.$router.push('/time-history') // Changed from '/history'
+            this.$router.push('/history') // Changed from '/history'
           }, 1500)
         } else {
           throw new Error('Failed to update profile')
