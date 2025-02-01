@@ -49,7 +49,7 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call', {
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/people', {
           email: this.email,
           password: this.password
         });

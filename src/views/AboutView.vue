@@ -84,7 +84,7 @@ export default {
   methods: {
     async getPeople() {
       try {
-        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call');
+        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
         this.people = response.data;
         console.log('People from getPeople:', this.people);
       } catch (error) {
