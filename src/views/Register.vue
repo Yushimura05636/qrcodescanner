@@ -102,18 +102,25 @@ export default {
     },
     async handleRegister() {
       try {
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/people', {
+        // Generate QR code first
+        const qrCode = this.generateQRString();
+        
+        // Create the request data
+        const registerData = {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,
           phone: this.phone,
-          gender: this.gender,
-          qr_code: this.generateQRString()
-        });
-        console.log('Response:', response.data);
+          gender: this.gender || 'male', // Add default value
+          qr_code: qrCode
+        };
         
-        // Store and display the QR string
-        this.qrString = this.generateQRString();
+        console.log('Sending registration data:', registerData);
+
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/people', registerData);
+        
+        console.log('Registration response:', response.data);
+        this.qrString = qrCode;
         
         // Show success message
         setTimeout(() => {
@@ -121,8 +128,8 @@ export default {
         }, 3000);
         
       } catch (error) {
-        console.error('Error:', error);
-        alert('Registration failed. Please try again.');
+        console.error('Registration error:', error.response?.data || error);
+        alert('Registration failed. Please make sure all fields are filled out.');
       }
     },
     async checkEmailExists() {
