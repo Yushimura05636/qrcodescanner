@@ -7,6 +7,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Login.vue')
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/Login.vue')
+  },
+  {
     path: '/register',
     name: 'register',
     component: () => import('../views/Register.vue')
@@ -27,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/TimeHistory.vue')
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     name: 'profile',
     component: () => import('../views/ProfileView.vue'),
   }
