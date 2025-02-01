@@ -72,9 +72,11 @@
               >
                 <qrcode-vue 
                   :value="person.qr_code"
-                  :size="200"
+                  :size="180"
                   level="H"
                   render-as="canvas"
+                  :background="'#ffffff'"
+                  :foreground="'#000000'"
                   class="w-full h-full object-contain"
                 />
               </div>
@@ -190,24 +192,23 @@
         </div>
         
         <div class="w-64 h-64 bg-white rounded-lg shadow-md p-2">
-          <img 
-            :src="`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(person.qr_code)}`"
-            alt="QR Code Large"
-            class="w-full h-full object-contain"
+          <qrcode-vue 
+            :value="person.qr_code"
+            :size="240"
+            level="H"
+            render-as="canvas"
+            :background="'#ffffff'"
+            :foreground="'#000000'"
+            class="qr-code-large"
           />
         </div>
-        
-        <div class="flex space-x-4">
-          <button 
-            @click="downloadQR"
-            class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200 flex items-center space-x-2"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            <span>Download QR</span>
-          </button>
-        </div>
+        <p class="text-sm text-gray-600 break-all max-w-md text-center">{{ person.qr_code }}</p>
+        <button 
+          @click="downloadQR"
+          class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200"
+        >
+          Download QR
+        </button>
       </div>
     </div>
 
