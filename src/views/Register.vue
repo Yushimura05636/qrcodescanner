@@ -87,7 +87,7 @@ export default {
     },
     async handleRegister() {
       try {
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/people', {
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call', {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,
