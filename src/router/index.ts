@@ -1,37 +1,25 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/Login.vue'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
-import QrScanner from '../views/QrScanner.vue'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView,
+    name: 'login',
+    component: () => import('../views/Login.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/Register.vue')
+  },
+  {
+    path: '/qrscanner',
+    name: 'qrscanner',
+    component: () => import('../views/QrScanner.vue')
   },
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/AboutView.vue'),
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register
-  },
-  {
-    path: '/QrScanner',
-    name: 'QrScanner',
-    component: QrScanner
+    component: () => import('../views/AboutView.vue')
   }
 ]
 
