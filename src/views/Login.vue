@@ -49,7 +49,7 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_URL}/login`, {
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/login', {
           email: this.email,
           password: this.password
         });

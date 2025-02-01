@@ -87,7 +87,7 @@ export default {
     },
     async handleRegister() {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_URL}/people`, {
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/people', {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,
