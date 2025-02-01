@@ -68,11 +68,19 @@ export default {
       console.log('QR Code detected:', decodedText)
       
       try {
-        const response = await axios.get(`https://qrscannerdb-production.up.railway.app/api/call/${decodedText}`);
+        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
         
         if (response.data) {
-          this.userData = response.data;
-          this.error = '';
+          // Find the user with matching QR code from the array
+          const user = response.data.find(user => user.qr_code === decodedText);
+          
+          if (user) {
+            this.userData = user;
+            this.error = '';
+          } else {
+            this.error = 'No user found';
+            this.userData = null;
+          }
         } else {
           this.error = 'No user found';
           this.userData = null;
