@@ -2,7 +2,10 @@
   <div class="qr-scanner">
     <h2>QR Code Scanner</h2>
     <div id="reader"></div>
-    <div v-if="error" class="error-message">{{ error }}</div>
+    <div v-if="error" class="error-message">
+      {{ error }}
+      <button class="rescan-button" @click="restartScanner">Re-scan</button>
+    </div>
     <div v-if="userData" class="success-message">
       <h3>User Details Found!</h3>
       <div class="user-details">
@@ -11,6 +14,7 @@
         <p><strong>Phone:</strong> {{ userData.phone }}</p>
         <p><strong>QR Code:</strong> {{ userData.qr_code }}</p>
       </div>
+      <button class="rescan-button" @click="restartScanner">Re-scan</button>
     </div>
   </div>
 </template>
@@ -101,6 +105,16 @@ export default {
     onScanError(error) {
       // Handle scan errors (usually just ignore them as they happen frequently)
       console.debug(`QR Code scan error: ${error}`)
+    },
+    async restartScanner() {
+      this.error = '';
+      this.userData = null;
+      this.scannedResult = null;
+      
+      if (this.html5QrCode) {
+        await this.html5QrCode.stop();
+        this.initializeScanner();
+      }
     }
   }
 }
@@ -134,6 +148,10 @@ h2 {
   color: #dc2626;
   border-radius: 4px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .success-message {
@@ -159,5 +177,21 @@ h2 {
 
 .user-details strong {
   color: #065f46;
+}
+
+.rescan-button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.rescan-button:hover {
+  background-color: #2563eb;
 }
 </style>
