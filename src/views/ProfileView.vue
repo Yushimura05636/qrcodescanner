@@ -46,16 +46,32 @@
     <!-- Main Content -->
     <div class="max-w-7xl w-full px-4 sm:px-6 lg:px-8 mx-auto flex-grow">
       <div class="relative -mt-24 flex flex-col items-center">
-        <div class="bg-white rounded-xl shadow-md p-8 w-full mt-12">
+        <!-- Show loading state -->
+        <div v-if="loading" class="bg-white rounded-xl shadow-md p-8 w-full mt-12">
+          <div class="flex justify-center items-center h-64">
+            <p>Loading profile...</p>
+          </div>
+        </div>
+
+        <!-- Show error state -->
+        <div v-else-if="error" class="bg-white rounded-xl shadow-md p-8 w-full mt-12">
+          <div class="flex justify-center items-center h-64">
+            <p class="text-red-500">{{ error }}</p>
+          </div>
+        </div>
+
+        <!-- Show content only when person data is loaded -->
+        <div v-else-if="person" class="bg-white rounded-xl shadow-md p-8 w-full mt-12">
           <!-- QR Code Section -->
           <div class="flex flex-col items-center mb-8">
             <div class="flex flex-col items-center space-y-2 mb-8">
               <div 
+                v-if="person.qr_code"
                 class="w-48 h-48 bg-white rounded-lg shadow-md p-3 cursor-pointer hover:shadow-lg transition-shadow duration-200"
                 @click="showQrModal = true"
               >
                 <img 
-                  :src="`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(person?.qr_code)}`"
+                  :src="`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(person.qr_code)}`"
                   alt="QR Code"
                   class="w-full h-full object-contain"
                 />
@@ -150,9 +166,9 @@
       </div>
     </div>
 
-    <!-- QR Modal -->
+    <!-- QR Modal - Only show when person exists -->
     <div 
-      v-if="showQrModal" 
+      v-if="showQrModal && person && person.qr_code" 
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click="showQrModal = false"
     >
@@ -233,31 +249,41 @@ export default {
       return this.person.gender === 'male' ? this.maleImage : this.femaleImage
     }
   },
-  created() {
-    // Check for both query parameter and route parameter
-    const queryId = this.$route.query.id;
-    const paramId = this.$route.params.id;
-    const id = queryId || paramId;
+  async created() {
+    try {
+      // Check for both query parameter and route parameter
+      const queryId = this.$route.query.id;
+      const paramId = this.$route.params.id;
+      const id = queryId || paramId;
 
-    if (id) {
-      this.fetchProfile(id);
-    } else {
-      this.error = 'No profile ID provided';
+      if (!id) {
+        this.error = 'No profile ID provided';
+        this.loading = false;
+        return;
+      }
+
+      await this.fetchProfile(id);
+    } catch (error) {
+      console.error('Error in created hook:', error);
+      this.error = 'Failed to load profile';
+    } finally {
       this.loading = false;
     }
   },
   methods: {
     async fetchProfile(id) {
       try {
-        this.loading = true;
         const response = await axios.get(`https://qrscannerdb-production.up.railway.app/api/call/people/${id}`);
-        this.person = response.data;
-        this.originalPerson = { ...response.data };
+        if (response.data) {
+          this.person = response.data;
+          this.originalPerson = { ...response.data };
+        } else {
+          this.error = 'Profile not found';
+        }
       } catch (error) {
         console.error('Error fetching profile:', error);
-        this.error = 'Failed to load profile';
-      } finally {
-        this.loading = false;
+        this.error = error.response?.data?.message || 'Failed to load profile';
+        throw error;
       }
     },
     startEditing() {

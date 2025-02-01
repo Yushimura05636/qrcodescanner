@@ -91,15 +91,7 @@
 
             <div class="flex items-center justify-between pt-6 pb-6">
               <div class="flex items-center">
-                <input 
-                  type="checkbox" 
-                  id="remember-me"
-                  v-model="rememberMe"
-                  class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-                >
-                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
-                  Remember me
-                </label>
+                
               </div>
 
               <div class="text-sm">
