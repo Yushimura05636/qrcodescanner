@@ -39,20 +39,12 @@
           <td scope="row">{{ person.phone }}</td>
           <td class="qr-cell">
             <div class="qr-container" @click="showQRModal(person.qr_code)">
-              <template v-if="person.qr_code">
-                <qrcode-vue 
-                  :value="person.qr_code" 
-                  :size="100" 
-                  level="H" 
-                  render-as="canvas"
-                />
-                <small class="qr-string">{{ person.qr_code }}</small>
-              </template>
-              <template v-else>
-                <div class="no-qr">
-                  <span>QR Code Not Available</span>
-                </div>
-              </template>
+              <qrcode-vue 
+                :value="person.qr_code" 
+                :size="100" 
+                level="H" 
+                render-as="canvas"
+              />
             </div>
           </td>
         </tr>
@@ -97,16 +89,18 @@ export default {
     }
   },
   created() {
+    console.log('AboutView component created');
     this.getPeople();
   },
   methods: {
     async getPeople() {
       try {
+        console.log('Fetching people data...');
         const response = await axios.get('http://localhost:8000/api/call/people');
+        console.log('People data received:', response.data);
         this.people = response.data;
-        console.log('People from getPeople:', this.people);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching people:', error);
       }
     },
     showQRModal(qrCode) {
@@ -114,8 +108,7 @@ export default {
       this.showModal = true;
     },
     getGenderImage(gender) {
-      const lowerGender = gender?.toLowerCase() || 'male';
-      return this.genderImages[lowerGender] || this.genderImages.male;
+      return this.genderImages[gender?.toLowerCase()] || this.genderImages.male;
     },
     capitalizeFirstLetter(string) {
       if (!string) return '';
@@ -132,25 +125,23 @@ export default {
 
 <style scoped>
 .container {
-  padding: 2rem;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .qr-cell {
-  vertical-align: middle !important;
+  text-align: center;
 }
 
 .qr-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
+  display: inline-block;
   cursor: pointer;
   transition: transform 0.2s;
 }
 
 .qr-container:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .qr-string {
@@ -181,18 +172,75 @@ export default {
 }
 
 table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-th {
-  background-color: #f8f9fa;
-  padding: 1rem !important;
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
-td {
-  padding: 1rem !important;
+th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.gender-cell {
+  text-align: center;
+}
+
+.gender-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.gender-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.gender-text {
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.api-url {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  table {
+    font-size: 14px;
+  }
+  
+  th, td {
+    padding: 10px;
+  }
+  
+  .api-url {
+    font-size: 1rem;
+  }
 }
 
 .modal-overlay {
@@ -216,56 +264,5 @@ td {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-}
-
-.gender-cell {
-  text-align: center;
-  vertical-align: middle !important;
-  min-width: 120px;
-}
-
-.gender-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.gender-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e0e0e0;
-  transition: transform 0.2s ease;
-}
-
-.gender-icon:hover {
-  transform: scale(1.1);
-  border-color: #4CAF50;
-}
-
-.gender-text {
-  font-size: 0.9rem;
-  color: #4a5568;
-  font-weight: 500;
-}
-
-.api-url {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-}
-
-@media (max-width: 768px) {
-  .api-url {
-    font-size: 1rem;
-    word-break: break-all;
-    padding: 0.5rem 1rem;
-  }
 }
 </style>

@@ -11,6 +11,7 @@
           v-model="email"
           required
           placeholder="Enter your email"
+          autocomplete="email"
         >
       </div>
 
@@ -22,6 +23,7 @@
           v-model="password"
           required
           placeholder="Enter your password"
+          autocomplete="current-password"
         >
       </div>
 
@@ -49,51 +51,55 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        const response = await axios.post('http://localhost:8000/api/call/login', {
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/login', {
           email: this.email,
           password: this.password
         });
 
-        console.log('Response:', response.data);
+        // Log the entire response to see its structure
+        console.log('Full Response:', response);
+        console.log('Response Data:', response.data);
 
-        if (response.data && response.data.token) {
-          // Store the token
-          localStorage.setItem('token', response.data.token);
+        if (response.data) {
+          console.log('Login successful!');
+          // Log the data we're trying to access
+          console.log('Token:', response.data.token);
+          console.log('User:', response.data.user);
           
-          // Set default authorization header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+          // Store in localStorage if needed
+          localStorage.setItem('userToken', response.data.token);
+          localStorage.setItem('userData', JSON.stringify(response.data.user));
           
-          // Redirect to register page
-          this.$router.push('/register');
+          this.$router.push('/AboutView');
         } else {
-          throw new Error('Invalid login response');
+          console.log('No response data received');
+          throw new Error('Login failed - no data received');
         }
       } catch (error) {
-        console.error('Login error:', error);
-        alert('Login failed. Please check your credentials.');
+        console.error('Login error details:', error);
+        alert('Login failed. Please check your credentials and try again.');
       }
     }
+  },
+  mounted() {
+    console.log('Login component mounted');
   }
 }
 </script>
 
 <style scoped>
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 1rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .login-form {
   background-color: white;
-  padding: 2.5rem;
+  padding: 3rem;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 420px;
   transition: transform 0.3s ease;
 }
 
@@ -185,10 +191,48 @@ input:focus {
   opacity: 0.9;
 }
 
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .login-form {
+    background-color: #1a1c20;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  h2, label {
+    color: #fff;
+  }
+
+  input {
+    background-color: #2c3e50;
+    border-color: #34495e;
+    color: #fff;
+  }
+
+  input::placeholder {
+    color: #95a5a6;
+  }
+
+  .register-link {
+    color: #95a5a6;
+  }
+}
+
 /* Responsive Design */
+@media (max-width: 768px) {
+  .login-container {
+    max-width: 500px;
+  }
+}
+
 @media (max-width: 480px) {
+  .login-container {
+    max-width: 100%;
+    padding: 0 15px;
+  }
+  
   .login-form {
     padding: 2rem;
+    border-radius: 12px;
   }
 
   h2 {
@@ -198,10 +242,39 @@ input:focus {
 
   input {
     padding: 0.75rem;
+    font-size: 0.95rem;
   }
 
   .submit-btn {
     padding: 0.875rem;
+    font-size: 1rem;
+  }
+}
+
+/* Handle very small screens */
+@media (max-width: 320px) {
+  .login-form {
+    padding: 1.25rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Handle landscape orientation */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .login-form {
+    padding: 1.25rem;
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
   }
 }
 </style>

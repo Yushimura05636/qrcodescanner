@@ -9,15 +9,13 @@ import HelloWorld from './components/HelloWorld.vue'
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
-      <h1 class="text-1xl font-bold text-blue-500">Tailwind Works!</h1>
-      <p class="mt-4 text-2xl italic text-green-600 hover:text-purple-500">Another Tailwind Test!</p>
 
       <nav>
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link> |
-        <router-link to="/register">Register</router-link> |
-        <router-link to="/login">Login</router-link> |
-        <router-link to="/scanner">Scanner</router-link>
+        <RouterLink to="/Login">Login</RouterLink>
+        <RouterLink to="/Register">Register</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/scanner">QR Scanner</RouterLink>
+        <RouterLink to="/history">History</RouterLink>
       </nav>
     </div>
   </header>
