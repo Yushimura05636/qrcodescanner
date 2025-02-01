@@ -72,7 +72,7 @@ export default {
       console.log('QR Code detected:', decodedText)
       
       try {
-        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
+        const response = await axios.get('http://localhost:8000/api/call/people');
         
         if (response.data) {
           // Find the user with matching QR code from the array

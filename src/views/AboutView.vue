@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <h1 class="api-url">
+      Current API: http://localhost:8000/api/call/people
+    </h1>
     <!-- Add debug info -->
     <p>Number of people: {{ people.length }}</p>
     <pre>{{ JSON.stringify(people, null, 2) }}</pre>
@@ -99,7 +102,7 @@ export default {
   methods: {
     async getPeople() {
       try {
-        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
+        const response = await axios.get('http://localhost:8000/api/call/people');
         this.people = response.data;
         console.log('People from getPeople:', this.people);
       } catch (error) {
@@ -246,5 +249,23 @@ td {
   font-size: 0.9rem;
   color: #4a5568;
   font-weight: 500;
+}
+
+.api-url {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .api-url {
+    font-size: 1rem;
+    word-break: break-all;
+    padding: 0.5rem 1rem;
+  }
 }
 </style>

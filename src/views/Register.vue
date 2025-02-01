@@ -102,25 +102,17 @@ export default {
     },
     async handleRegister() {
       try {
-        // Generate QR code first
-        const qrCode = this.generateQRString();
-        
-        // Create the request data
-        const registerData = {
+        const response = await axios.post('http://localhost:8000/api/call/people', {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,
           phone: this.phone,
-          gender: this.gender || 'male', // Add default value
-          qr_code: qrCode
-        };
-        
-        console.log('Sending registration data:', registerData);
-
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/people', registerData);
+          gender: this.gender || 'male',
+          qr_code: this.generateQRString()
+        });
         
         console.log('Registration response:', response.data);
-        this.qrString = qrCode;
+        this.qrString = this.generateQRString();
         
         // Show success message
         setTimeout(() => {

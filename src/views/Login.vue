@@ -49,41 +49,28 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/login', {
+        const response = await axios.post('http://localhost:8000/api/call/login', {
           email: this.email,
           password: this.password
         });
 
-        console.log('Response status:', response.status);
-        const responseData = await response.data;
-        const data = responseData.data;  // Extract the nested data
-        console.log('Full response data:', data);
-        console.log('Email:', data.user.email);
-        console.log('Token:', data.token);
+        console.log('Response:', response.data);
 
-        if (!response.ok) {
-          throw new Error(data.message || 'Login failed');
+        if (response.data && response.data.token) {
+          // Store the token
+          localStorage.setItem('token', response.data.token);
+          
+          // Set default authorization header
+          axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+          
+          // Redirect to register page
+          this.$router.push('/register');
+        } else {
+          throw new Error('Invalid login response');
         }
-
-        // Check if token exists in response
-        if (!data.token) {
-          console.error('No token received in response:', data);
-          throw new Error('No authentication token received');
-        }
-
-        // Store the token in localStorage
-        localStorage.setItem('token', data.token);
-        console.log('Token stored:', data.token);
-        
-        // Update Authorization header for future requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-        
-        // Redirect to home page or dashboard
-        this.$router.push('/register');
       } catch (error) {
         console.error('Login error:', error);
-        // Here you might want to add error handling UI feedback
-        alert(error.message || 'An error occurred during login');
+        alert('Login failed. Please check your credentials.');
       }
     }
   }
