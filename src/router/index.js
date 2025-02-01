@@ -34,6 +34,16 @@ const routes = [
         path: '/profile/:id',
         name: 'profile',
         component: () => import('../views/ProfileView.vue'),
+    },
+    {
+        path: '/memes',
+        name: 'memes',
+        component: () => import('../views/Memes.vue')
+    },
+    {
+        path: '/view',
+        name: 'view',
+        component: () => import('../views/View.vue')
     }
 ];
 const router = createRouter({
