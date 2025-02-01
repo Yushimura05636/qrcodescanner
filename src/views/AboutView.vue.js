@@ -12,25 +12,39 @@ export default (await import('vue')).defineComponent({
             user: [],
             showModal: false,
             selectedQR: '',
+            genderImages: {
+                male: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/male/45.png',
+                female: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/45.png'
+            }
         };
     },
     created() {
+        console.log('AboutView component created');
         this.getPeople();
     },
     methods: {
         async getPeople() {
             try {
-                const response = await axios.get(`${process.env.VUE_APP_API_URL}/call/people`);
+                console.log('Fetching people data...');
+                const response = await axios.get('http://localhost:8000/api/call/people');
+                console.log('People data received:', response.data);
                 this.people = response.data;
-                console.log('People from getPeople:', this.people);
             }
             catch (error) {
-                console.error(error);
+                console.error('Error fetching people:', error);
             }
         },
         showQRModal(qrCode) {
             this.selectedQR = qrCode;
             this.showModal = true;
+        },
+        getGenderImage(gender) {
+            return this.genderImages[gender?.toLowerCase()] || this.genderImages.male;
+        },
+        capitalizeFirstLetter(string) {
+            if (!string)
+                return '';
+            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
         }
     },
     async mounted() {
@@ -46,11 +60,14 @@ function __VLS_template() {
     };
     let __VLS_components;
     let __VLS_directives;
-    ['qr-container', 'no-qr',];
+    ['qr-container', 'no-qr', 'container', 'api-url',];
     // CSS variable injection 
     // CSS variable injection end 
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
         ...{ class: ("container") },
+    });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.h1, __VLS_intrinsicElements.h1)({
+        ...{ class: ("api-url") },
     });
     __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
     (__VLS_ctx.people.length);
@@ -66,11 +83,12 @@ function __VLS_template() {
     __VLS_elementAsFunction(__VLS_intrinsicElements.th, __VLS_intrinsicElements.th)({});
     __VLS_elementAsFunction(__VLS_intrinsicElements.th, __VLS_intrinsicElements.th)({});
     __VLS_elementAsFunction(__VLS_intrinsicElements.th, __VLS_intrinsicElements.th)({});
+    __VLS_elementAsFunction(__VLS_intrinsicElements.th, __VLS_intrinsicElements.th)({});
     __VLS_elementAsFunction(__VLS_intrinsicElements.tbody, __VLS_intrinsicElements.tbody)({});
     if (__VLS_ctx.people.length === 0) {
         __VLS_elementAsFunction(__VLS_intrinsicElements.tr, __VLS_intrinsicElements.tr)({});
         __VLS_elementAsFunction(__VLS_intrinsicElements.td, __VLS_intrinsicElements.td)({
-            colspan: ("5"),
+            colspan: ("6"),
         });
     }
     else {
@@ -79,6 +97,22 @@ function __VLS_template() {
                 key: ((person.id)),
                 ...{ class: ("table-secondary") },
             });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.td, __VLS_intrinsicElements.td)({
+                scope: ("row"),
+                ...{ class: ("gender-cell") },
+            });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+                ...{ class: ("gender-container") },
+            });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.img, __VLS_intrinsicElements.img)({
+                src: ((__VLS_ctx.getGenderImage(person.gender))),
+                alt: ((person.gender)),
+                ...{ class: ("gender-icon") },
+            });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.span, __VLS_intrinsicElements.span)({
+                ...{ class: ("gender-text") },
+            });
+            (__VLS_ctx.capitalizeFirstLetter(person.gender));
             __VLS_elementAsFunction(__VLS_intrinsicElements.td, __VLS_intrinsicElements.td)({
                 scope: ("row"),
             });
@@ -106,33 +140,21 @@ function __VLS_template() {
                     } },
                 ...{ class: ("qr-container") },
             });
-            if (person.qr_code) {
-                const __VLS_0 = {}.QrcodeVue;
-                /** @type { [typeof __VLS_components.QrcodeVue, typeof __VLS_components.qrcodeVue, ] } */ ;
-                // @ts-ignore
-                const __VLS_1 = __VLS_asFunctionalComponent(__VLS_0, new __VLS_0({
-                    value: ((person.qr_code)),
-                    size: ((100)),
-                    level: ("H"),
-                    renderAs: ("canvas"),
-                }));
-                const __VLS_2 = __VLS_1({
-                    value: ((person.qr_code)),
-                    size: ((100)),
-                    level: ("H"),
-                    renderAs: ("canvas"),
-                }, ...__VLS_functionalComponentArgsRest(__VLS_1));
-                __VLS_elementAsFunction(__VLS_intrinsicElements.small, __VLS_intrinsicElements.small)({
-                    ...{ class: ("qr-string") },
-                });
-                (person.qr_code);
-            }
-            else {
-                __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-                    ...{ class: ("no-qr") },
-                });
-                __VLS_elementAsFunction(__VLS_intrinsicElements.span, __VLS_intrinsicElements.span)({});
-            }
+            const __VLS_0 = {}.QrcodeVue;
+            /** @type { [typeof __VLS_components.QrcodeVue, typeof __VLS_components.qrcodeVue, ] } */ ;
+            // @ts-ignore
+            const __VLS_1 = __VLS_asFunctionalComponent(__VLS_0, new __VLS_0({
+                value: ((person.qr_code)),
+                size: ((100)),
+                level: ("H"),
+                renderAs: ("canvas"),
+            }));
+            const __VLS_2 = __VLS_1({
+                value: ((person.qr_code)),
+                size: ((100)),
+                level: ("H"),
+                renderAs: ("canvas"),
+            }, ...__VLS_functionalComponentArgsRest(__VLS_1));
         }
     }
     if (__VLS_ctx.showModal) {
@@ -168,7 +190,7 @@ function __VLS_template() {
         });
         (__VLS_ctx.selectedQR);
     }
-    ['container', 'table', 'table-hover', 'table-secondary', 'qr-cell', 'qr-container', 'qr-string', 'no-qr', 'modal-overlay', 'modal-content', 'qr-string',];
+    ['container', 'api-url', 'table', 'table-hover', 'table-secondary', 'gender-cell', 'gender-container', 'gender-icon', 'gender-text', 'qr-cell', 'qr-container', 'modal-overlay', 'modal-content', 'qr-string',];
     var __VLS_slots;
     var $slots;
     let __VLS_inheritedAttrs;

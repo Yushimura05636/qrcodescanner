@@ -131,7 +131,7 @@ export default {
 
         console.log('Sending Time In record:', timeRecord);
         
-        const response = await axios.post('http://localhost:8000/api/call/history', timeRecord);
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/history', timeRecord);
         
         if (response.data) {
           alert('Time In recorded successfully!');
@@ -155,7 +155,7 @@ export default {
 
         console.log('Sending Time Out record:', timeRecord);
         
-        const response = await axios.post('http://localhost:8000/api/call/history', timeRecord);
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/history', timeRecord);
         
         if (response.data) {
           alert('Time Out recorded successfully!');

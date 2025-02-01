@@ -7,6 +7,7 @@ export default (await import('vue')).defineComponent({
             lastname: '',
             email: '',
             phone: '',
+            gender: '',
             qrString: null
         };
     },
@@ -21,15 +22,15 @@ export default (await import('vue')).defineComponent({
         },
         async handleRegister() {
             try {
-                const response = await axios.post(`${process.env.VUE_APP_API_URL}/people`, {
+                const response = await axios.post('http://localhost:8000/api/call/people', {
                     firstname: this.firstname,
                     lastname: this.lastname,
                     email: this.email,
                     phone: this.phone,
+                    gender: this.gender || 'male',
                     qr_code: this.generateQRString()
                 });
-                console.log('Response:', response.data);
-                // Store and display the QR string
+                console.log('Registration response:', response.data);
                 this.qrString = this.generateQRString();
                 // Show success message
                 setTimeout(() => {
@@ -37,8 +38,8 @@ export default (await import('vue')).defineComponent({
                 }, 3000);
             }
             catch (error) {
-                console.error('Error:', error);
-                alert('Registration failed. Please try again.');
+                console.error('Registration error:', error.response?.data || error);
+                alert('Registration failed. Please make sure all fields are filled out.');
             }
         },
         async checkEmailExists() {
@@ -72,7 +73,7 @@ function __VLS_template() {
     const __VLS_ctx = {};
     let __VLS_components;
     let __VLS_directives;
-    ['register-form', 'submit-btn', 'submit-btn', 'login-link', 'login-link', 'register-form', 'submit-btn', 'success-message', 'success-message',];
+    ['register-form', 'submit-btn', 'submit-btn', 'login-link', 'login-link', 'register-form', 'submit-btn', 'success-message', 'success-message', 'gender-select',];
     // CSS variable injection 
     // CSS variable injection end 
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
@@ -108,6 +109,27 @@ function __VLS_template() {
         value: ((__VLS_ctx.lastname)),
         required: (true),
         placeholder: ("Enter your last name"),
+    });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+        ...{ class: ("form-group") },
+    });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
+        for: ("gender"),
+    });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.select, __VLS_intrinsicElements.select)({
+        id: ("gender"),
+        value: ((__VLS_ctx.gender)),
+        required: (true),
+        ...{ class: ("gender-select") },
+    });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({
+        value: (""),
+    });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({
+        value: ("male"),
+    });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({
+        value: ("female"),
     });
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
         ...{ class: ("form-group") },
@@ -161,7 +183,7 @@ function __VLS_template() {
     }, ...__VLS_functionalComponentArgsRest(__VLS_1));
     __VLS_5.slots.default;
     var __VLS_5;
-    ['register-container', 'register-form', 'form-group', 'form-group', 'form-group', 'form-group', 'submit-btn', 'success-message', 'login-link',];
+    ['register-container', 'register-form', 'form-group', 'form-group', 'form-group', 'gender-select', 'form-group', 'form-group', 'submit-btn', 'success-message', 'login-link',];
     var __VLS_slots;
     var $slots;
     let __VLS_inheritedAttrs;

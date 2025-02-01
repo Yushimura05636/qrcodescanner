@@ -27,12 +27,6 @@ function __VLS_template() {
     const __VLS_1 = __VLS_0({
         msg: ("You did it!"),
     }, ...__VLS_functionalComponentArgsRest(__VLS_0));
-    __VLS_elementAsFunction(__VLS_intrinsicElements.h1, __VLS_intrinsicElements.h1)({
-        ...{ class: ("text-1xl font-bold text-blue-500") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({
-        ...{ class: ("mt-4 text-2xl italic text-green-600 hover:text-purple-500") },
-    });
     __VLS_elementAsFunction(__VLS_intrinsicElements.nav, __VLS_intrinsicElements.nav)({});
     const __VLS_5 = {}.RouterLink;
     /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
@@ -71,19 +65,30 @@ function __VLS_template() {
     /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
     // @ts-ignore
     const __VLS_24 = __VLS_asFunctionalComponent(__VLS_23, new __VLS_23({
-        to: ("/QrScanner"),
+        to: ("/scanner"),
     }));
     const __VLS_25 = __VLS_24({
-        to: ("/QrScanner"),
+        to: ("/scanner"),
     }, ...__VLS_functionalComponentArgsRest(__VLS_24));
     __VLS_28.slots.default;
     var __VLS_28;
-    const __VLS_29 = {}.RouterView;
+    const __VLS_29 = {}.RouterLink;
+    /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
+    // @ts-ignore
+    const __VLS_30 = __VLS_asFunctionalComponent(__VLS_29, new __VLS_29({
+        to: ("/history"),
+    }));
+    const __VLS_31 = __VLS_30({
+        to: ("/history"),
+    }, ...__VLS_functionalComponentArgsRest(__VLS_30));
+    __VLS_34.slots.default;
+    var __VLS_34;
+    const __VLS_35 = {}.RouterView;
     /** @type { [typeof __VLS_components.RouterView, ] } */ ;
     // @ts-ignore
-    const __VLS_30 = __VLS_asFunctionalComponent(__VLS_29, new __VLS_29({}));
-    const __VLS_31 = __VLS_30({}, ...__VLS_functionalComponentArgsRest(__VLS_30));
-    ['logo', 'wrapper', 'text-1xl', 'font-bold', 'text-blue-500', 'mt-4', 'text-2xl', 'italic', 'text-green-600', 'hover:text-purple-500',];
+    const __VLS_36 = __VLS_asFunctionalComponent(__VLS_35, new __VLS_35({}));
+    const __VLS_37 = __VLS_36({}, ...__VLS_functionalComponentArgsRest(__VLS_36));
+    ['logo', 'wrapper',];
     var __VLS_slots;
     var $slots;
     let __VLS_inheritedAttrs;

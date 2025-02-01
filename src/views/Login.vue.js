@@ -10,45 +10,43 @@ export default (await import('vue')).defineComponent({
     methods: {
         async handleLogin() {
             try {
-                const response = await axios.post(`${process.env.VUE_APP_API_URL}/login`, {
+                const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/login', {
                     email: this.email,
                     password: this.password
                 });
-                console.log('Response status:', response.status);
-                const responseData = await response.data;
-                const data = responseData.data; // Extract the nested data
-                console.log('Full response data:', data);
-                console.log('Email:', data.user.email);
-                console.log('Token:', data.token);
-                if (!response.ok) {
-                    throw new Error(data.message || 'Login failed');
+                // Log the entire response to see its structure
+                console.log('Full Response:', response);
+                console.log('Response Data:', response.data);
+                if (response.data) {
+                    console.log('Login successful!');
+                    // Log the data we're trying to access
+                    console.log('Token:', response.data.token);
+                    console.log('User:', response.data.user);
+                    // Store in localStorage if needed
+                    localStorage.setItem('userToken', response.data.token);
+                    localStorage.setItem('userData', JSON.stringify(response.data.user));
+                    this.$router.push('/AboutView');
                 }
-                // Check if token exists in response
-                if (!data.token) {
-                    console.error('No token received in response:', data);
-                    throw new Error('No authentication token received');
+                else {
+                    console.log('No response data received');
+                    throw new Error('Login failed - no data received');
                 }
-                // Store the token in localStorage
-                localStorage.setItem('token', data.token);
-                console.log('Token stored:', data.token);
-                // Update Authorization header for future requests
-                axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-                // Redirect to home page or dashboard
-                this.$router.push('/register');
             }
             catch (error) {
-                console.error('Login error:', error);
-                // Here you might want to add error handling UI feedback
-                alert(error.message || 'An error occurred during login');
+                console.error('Login error details:', error);
+                alert('Login failed. Please check your credentials and try again.');
             }
         }
+    },
+    mounted() {
+        console.log('Login component mounted');
     }
 }); /* PartiallyEnd: #3632/script.vue */
 function __VLS_template() {
     const __VLS_ctx = {};
     let __VLS_components;
     let __VLS_directives;
-    ['login-form', 'submit-btn', 'submit-btn', 'register-link', 'register-link', 'login-form', 'submit-btn',];
+    ['login-form', 'submit-btn', 'submit-btn', 'register-link', 'register-link', 'login-form', 'register-link', 'login-container', 'login-container', 'login-form', 'submit-btn', 'login-form', 'login-form', 'form-group',];
     // CSS variable injection 
     // CSS variable injection end 
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
@@ -70,6 +68,7 @@ function __VLS_template() {
         id: ("email"),
         required: (true),
         placeholder: ("Enter your email"),
+        autocomplete: ("email"),
     });
     (__VLS_ctx.email);
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
@@ -83,6 +82,7 @@ function __VLS_template() {
         id: ("password"),
         required: (true),
         placeholder: ("Enter your password"),
+        autocomplete: ("current-password"),
     });
     (__VLS_ctx.password);
     __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({
