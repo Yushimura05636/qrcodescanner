@@ -15,34 +15,44 @@ export default (await import('vue')).defineComponent({
         console.log('QrScanner mounted');
         this.initScanner();
     },
+    beforeUnmount() {
+        if (this.scanner) {
+            this.scanner.clear();
+        }
+    },
     methods: {
         initScanner() {
             console.log('Initializing scanner...');
-            this.scanner = new Html5QrcodeScanner('reader', {
-                qrbox: { width: 250, height: 250 },
-                fps: 20
-            });
-            this.scanner.render(this.onScanSuccess, this.onScanError);
+            try {
+                this.scanner = new Html5QrcodeScanner('reader', {
+                    qrbox: { width: 250, height: 250 },
+                    fps: 20
+                });
+                console.log('Scanner created:', this.scanner);
+                this.scanner.render(this.onScanSuccess, this.onScanError);
+            }
+            catch (error) {
+                console.error('Scanner initialization error:', error);
+                this.error = 'Failed to initialize scanner';
+            }
         },
         async onScanSuccess(decodedText) {
-            console.log('Scanned QR Code (decodedText):', decodedText);
+            console.log('QR Code detected:', decodedText);
             this.scannedResult = decodedText;
             try {
                 const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
-                console.log('API Response Data:', response.data);
-                // Log all QR codes from the response
-                console.log('Available QR codes in database:', response.data.map(user => user.qr_code));
+                console.log('API Response:', response.data);
                 const user = response.data.find(user => {
-                    console.log('Comparing:');
-                    console.log('Database QR:', user.qr_code);
-                    console.log('Scanned QR:', decodedText);
-                    console.log('Match?:', user.qr_code === decodedText);
+                    console.log('Comparing:', user.qr_code, decodedText);
                     return user.qr_code === decodedText;
                 });
                 if (user) {
                     console.log('User found:', user);
                     this.userData = user;
                     this.error = null;
+                    if (this.scanner) {
+                        this.scanner.pause();
+                    }
                 }
                 else {
                     console.log('No user found for QR code:', decodedText);
@@ -59,6 +69,35 @@ export default (await import('vue')).defineComponent({
         onScanError(error) {
             console.warn('QR Scan error:', error);
         },
+        async handleTimeIn() {
+            await this.handleTimeRecord('Time In');
+        },
+        async handleTimeOut() {
+            await this.handleTimeRecord('Time Out');
+        },
+        async handleTimeRecord(description) {
+            try {
+                this.loading = true;
+                const timeRecord = {
+                    description,
+                    datetime: this.formatDateTime(new Date()),
+                    person_id: this.userData.id
+                };
+                console.log('Sending time record:', timeRecord);
+                const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/history', timeRecord);
+                if (response.data) {
+                    alert(`${description} recorded successfully!`);
+                    this.restartScanner();
+                }
+            }
+            catch (error) {
+                console.error('Time record error:', error);
+                alert(`Failed to record ${description}. Please try again.`);
+            }
+            finally {
+                this.loading = false;
+            }
+        },
         formatDateTime(date) {
             const d = new Date(date);
             const year = d.getFullYear();
@@ -69,65 +108,14 @@ export default (await import('vue')).defineComponent({
             const seconds = String(d.getSeconds()).padStart(2, '0');
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         },
-        async handleTimeIn() {
-            try {
-                this.loading = true;
-                const timeRecord = {
-                    description: 'Time In',
-                    datetime: this.formatDateTime(new Date()),
-                    person_id: this.userData.id
-                };
-                console.log('Sending Time In record:', timeRecord);
-                const response = await axios.post('http://localhost:8000/api/call/history', timeRecord);
-                if (response.data) {
-                    alert('Time In recorded successfully!');
-                    this.restartScanner();
-                }
-            }
-            catch (error) {
-                console.error('Time In error:', error);
-                alert('Failed to record Time In. Please try again.');
-            }
-            finally {
-                this.loading = false;
-            }
-        },
-        async handleTimeOut() {
-            try {
-                this.loading = true;
-                const timeRecord = {
-                    description: 'Time Out',
-                    datetime: this.formatDateTime(new Date()),
-                    person_id: this.userData.id
-                };
-                console.log('Sending Time Out record:', timeRecord);
-                const response = await axios.post('http://localhost:8000/api/call/history', timeRecord);
-                if (response.data) {
-                    alert('Time Out recorded successfully!');
-                    this.restartScanner();
-                }
-            }
-            catch (error) {
-                console.error('Time Out error:', error);
-                alert('Failed to record Time Out. Please try again.');
-            }
-            finally {
-                this.loading = false;
-            }
-        },
         restartScanner() {
             if (this.scanner) {
                 this.scanner.clear();
-                this.initScanner();
-                this.error = null;
                 this.userData = null;
+                this.error = null;
                 this.scannedResult = null;
+                this.initScanner();
             }
-        }
-    },
-    beforeUnmount() {
-        if (this.scanner) {
-            this.scanner.clear();
         }
     }
 }); /* PartiallyEnd: #3632/script.vue */
@@ -190,13 +178,13 @@ function __VLS_template() {
             ...{ class: ("time-in-button") },
             disabled: ((__VLS_ctx.loading)),
         });
-        (__VLS_ctx.loading ? 'Recording...' : 'Time In');
+        (__VLS_ctx.loading ? 'Processing...' : 'Time In');
         __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({
             ...{ onClick: (__VLS_ctx.handleTimeOut) },
             ...{ class: ("time-out-button") },
             disabled: ((__VLS_ctx.loading)),
         });
-        (__VLS_ctx.loading ? 'Recording...' : 'Time Out');
+        (__VLS_ctx.loading ? 'Processing...' : 'Time Out');
         __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({
             ...{ onClick: (__VLS_ctx.restartScanner) },
             ...{ class: ("rescan-button") },

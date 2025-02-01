@@ -26,7 +26,7 @@ export default (await import('vue')).defineComponent({
         async getPeople() {
             try {
                 console.log('Fetching people data...');
-                const response = await axios.get('http://localhost:8000/api/call/people');
+                const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
                 console.log('People data received:', response.data);
                 this.people = response.data;
             }
