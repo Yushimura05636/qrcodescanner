@@ -70,9 +70,11 @@
                 class="w-48 h-48 bg-white rounded-lg shadow-md p-3 cursor-pointer hover:shadow-lg transition-shadow duration-200"
                 @click="showQrModal = true"
               >
-                <img 
-                  :src="`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(person.qr_code)}`"
-                  alt="QR Code"
+                <qrcode-vue 
+                  :value="person.qr_code"
+                  :size="200"
+                  level="H"
+                  render-as="canvas"
                   class="w-full h-full object-contain"
                 />
               </div>
@@ -227,9 +229,13 @@
 
 <script>
 import axios from 'axios';
+import QrcodeVue from 'qrcode.vue';
 
 export default {
   name: 'ProfileView',
+  components: {
+    QrcodeVue
+  },
   data() {
     return {
       person: null,
