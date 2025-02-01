@@ -33,12 +33,12 @@ const routes = [
     {
         path: '/profile/:id',
         name: 'profile',
-        component: () => import('../views/ProfileView.vue')
+        component: () => import('../views/ProfileView.vue'),
     },
     {
         path: '/memes',
         name: 'memes',
-        component: () => import('../views/Memes.vue')
+        component: () => import('../views/memes.vue')
     },
     {
         path: '/view',

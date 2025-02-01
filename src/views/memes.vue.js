@@ -39,4 +39,4 @@ export default (await import('vue')).defineComponent({
     __typeEl: {},
 });
 ; /* PartiallyEnd: #4569/main.vue */
-//# sourceMappingURL=memes.vue.js.map
+//# sourceMappingURL=Memes.vue.js.map

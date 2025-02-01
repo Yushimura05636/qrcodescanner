@@ -21,7 +21,10 @@ export default (await import('vue')).defineComponent({
         }
     },
     created() {
-        const id = this.$route.query.id;
+        // Check for both query parameter and route parameter
+        const queryId = this.$route.query.id;
+        const paramId = this.$route.params.id;
+        const id = queryId || paramId;
         if (id) {
             this.fetchProfile(id);
         }
@@ -106,8 +109,8 @@ export default (await import('vue')).defineComponent({
         async updateProfile() {
             try {
                 this.loading = true;
-                const response = await fetch('/api/profile/update', {
-                    method: 'POST',
+                const response = await fetch(`https://qrscannerdb-production.up.railway.app/api/call/people/${this.person.id}`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -117,7 +120,7 @@ export default (await import('vue')).defineComponent({
                 if (response.ok) {
                     this.showSuccess = true;
                     setTimeout(() => {
-                        this.$router.push('/history'); // Changed from '/history'
+                        window.location.href = '/history'; // Changed from '/history'
                     }, 1500);
                 }
                 else {

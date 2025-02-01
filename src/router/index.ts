@@ -39,7 +39,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/memes',
     name: 'memes',
-    component: () => import('../views/Memes.vue')
+    component: () => import('../views/memes.vue')
   },
   {
     path: '/view',
