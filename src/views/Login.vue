@@ -1,280 +1,275 @@
 <template>
-  <div class="login-container">
-    <form @submit.prevent="handleLogin" class="login-form">
-      <h2>Login</h2>
-      
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input 
-          type="email" 
-          id="email"
-          v-model="email"
-          required
-          placeholder="Enter your email"
-          autocomplete="email"
-        >
+  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <!-- Error Popup -->
+    <div v-if="showError" 
+         class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 flex flex-col items-center transform animate-popup">
+        <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mb-4">
+          <svg 
+            class="w-12 h-12 text-red-500 animate-error" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="3" 
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </div>
+        <p class="text-xl font-semibold text-gray-900">Login Failed</p>
+        <p class="text-gray-600 mt-2">Invalid email or password</p>
+      </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div v-if="showSuccess" 
+         class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 flex flex-col items-center transform animate-popup">
+        <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
+          <svg 
+            class="w-12 h-12 text-green-500 animate-success" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="3" 
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <p class="text-xl font-semibold text-gray-900">Login Successful</p>
+        <p class="text-gray-600 mt-2">Welcome back!</p>
+      </div>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-6xl min-h-[600px] flex relative">
+      <!-- Left side - Image -->
+      <div class="hidden lg:block lg:w-1/2 bg-cover bg-center relative" 
+           style="background-image: url('https://thumbs.dreamstime.com/b/close-up-young-women-hand-holding-smartphone-scanning-qr-code-digital-payment-customer-paying-money-online-using-mobile-204366639.jpg')">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-black/10"></div>
       </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password"
-          v-model="password"
-          required
-          placeholder="Enter your password"
-          autocomplete="current-password"
-        >
-      </div>
+      <!-- Right side - Login Form -->
+      <div class="w-full lg:w-1/2 p-16 relative z-10">
+        <div class="max-w-md mx-auto w-full">
+          <h2 class="text-3xl font-bold text-orange-600 pb-12">Welcome Back</h2>
+          
+          <form class="space-y-6" @submit.prevent="handleSubmit">
+            <div class="pt-4 pb-4">
+              <label for="email" class="block text-sm font-medium text-gray-700 pb-2">Email</label>
+              <input 
+                type="email" 
+                id="email"
+                v-model="email"
+                class="mt-1 block w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg shadow-sm 
+                       focus:outline-none focus:ring-orange-500 focus:border-orange-500 
+                       placeholder-gray-400"
+                placeholder="Enter your email"
+                required
+              >
+            </div>
 
-      <button type="submit" class="submit-btn">Login</button>
-      
-      <p class="register-link">
-        Don't have an account? 
-        <router-link to="/register">Register here</router-link>
-      </p>
-    </form>
+            <div class="pt-4 pb-4">
+              <label for="password" class="block text-sm font-medium text-gray-700 pb-2">Password</label>
+              <input 
+                type="password" 
+                id="password"
+                v-model="password"
+                class="mt-1 block w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg shadow-sm 
+                       focus:outline-none focus:ring-orange-500 focus:border-orange-500 
+                       placeholder-gray-400"
+                placeholder="Enter your password"
+                required
+              >
+            </div>
+
+            <div class="flex items-center justify-between pt-6 pb-6">
+              <div class="flex items-center">
+                <input 
+                  type="checkbox" 
+                  id="remember-me"
+                  v-model="rememberMe"
+                  class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                >
+                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                  Remember me
+                </label>
+              </div>
+
+              <div class="text-sm">
+                <a href="#" class="font-medium text-orange-600 hover:text-orange-500">
+                  Forgot Password?
+                </a>
+              </div>
+            </div>
+
+            <div class="pt-6 pb-6">
+              <button 
+                type="submit" 
+                class="w-full bg-orange-600 text-white py-2.5 px-6 text-base font-medium rounded-lg 
+                       hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
+                       focus:ring-orange-500 transition-colors duration-200"
+              >
+                Sign in
+              </button>
+            </div>
+
+            <div class="text-center pt-6">
+              <router-link 
+                to="/register" 
+                class="text-sm text-orange-600 hover:text-orange-500 transition-colors duration-200"
+              >
+                Don't have an account? Create one
+              </router-link>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   name: 'Login',
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      rememberMe: false,
+      showError: false,
+      showSuccess: false
     }
   },
   methods: {
-    async handleLogin() {
+    async handleSubmit() {
       try {
         const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/login', {
           email: this.email,
           password: this.password
         });
 
-        // Log the entire response to see its structure
-        console.log('Full Response:', response);
-        console.log('Response Data:', response.data);
-
         if (response.data) {
-          console.log('Login successful!');
-          // Log the data we're trying to access
-          console.log('Token:', response.data.token);
-          console.log('User:', response.data.user);
-          
-          // Store in localStorage if needed
-          localStorage.setItem('userToken', response.data.token);
-          localStorage.setItem('userData', JSON.stringify(response.data.user));
-          
-          this.$router.push('/AboutView');
-        } else {
-          console.log('No response data received');
-          throw new Error('Login failed - no data received');
+          this.showSuccess = true;
+          console.log(response.data.token);
+          this.$router.push('/profile');
         }
       } catch (error) {
-        console.error('Login error details:', error);
-        alert('Login failed. Please check your credentials and try again.');
+        console.error('Login error:', error);
+        this.showError = true;
+        setTimeout(() => {
+          this.showError = false;
+        }, 2000);
       }
     }
-  },
-  mounted() {
-    console.log('Login component mounted');
   }
 }
 </script>
 
 <style scoped>
-.login-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
+input, select, button {
+  transition: all 0.2s ease-in-out;
 }
 
-.login-form {
-  background-color: white;
-  padding: 3rem;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  transition: transform 0.3s ease;
+/* Error Popup Animations */
+@keyframes popup {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.login-form:hover {
-  transform: translateY(-5px);
+@keyframes error {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 2.5rem;
-  color: #2c3e50;
-  font-size: 2rem;
-  font-weight: 600;
+.animate-popup {
+  animation: popup 0.5s ease-out forwards;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
-  position: relative;
+.animate-error {
+  animation: error 0.8s ease-out forwards;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #34495e;
-  font-weight: 500;
-  font-size: 0.95rem;
+/* Success Animation */
+@keyframes success {
+  0% {
+    stroke-dasharray: 0, 100;
+  }
+  100% {
+    stroke-dasharray: 100, 100;
+  }
 }
 
-input {
-  width: 100%;
-  padding: 0.875rem 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background-color: #f8f9fa;
+.animate-success {
+  stroke-dasharray: 0, 100;
+  animation: success 0.8s ease-out forwards;
+  animation-delay: 0.2s;
 }
 
-input:focus {
-  outline: none;
-  border-color: #4CAF50;
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 1rem;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 1.5rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(76, 175, 80, 0.11);
-}
-
-.submit-btn:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(76, 175, 80, 0.2);
-}
-
-.submit-btn:active {
-  transform: translateY(0);
-}
-
-.register-link {
-  text-align: center;
-  margin-top: 1.5rem;
-  color: #666;
-  font-size: 0.95rem;
-}
-
-.register-link a {
-  color: #4CAF50;
-  text-decoration: none;
-  font-weight: 600;
-  margin-left: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.register-link a:hover {
-  color: #45a049;
-  text-decoration: none;
-  opacity: 0.9;
-}
-
-/* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .login-form {
+  .bg-gray-100 {
     background-color: #1a1c20;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .bg-white {
+    background-color: #2d3748;
   }
 
-  h2, label {
-    color: #fff;
+  .text-gray-700 {
+    color: #e2e8f0;
   }
 
   input {
-    background-color: #2c3e50;
-    border-color: #34495e;
+    background-color: #2d3748;
     color: #fff;
+    border-color: #4a5568;
   }
 
   input::placeholder {
-    color: #95a5a6;
-  }
-
-  .register-link {
-    color: #95a5a6;
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .login-container {
-    max-width: 500px;
-  }
-}
-
-@media (max-width: 480px) {
-  .login-container {
-    max-width: 100%;
-    padding: 0 15px;
+    color: #718096;
   }
   
-  .login-form {
-    padding: 2rem;
-    border-radius: 12px;
+  .text-gray-900 {
+    color: #fff;
+  }
+  
+  .text-gray-600 {
+    color: #a0aec0;
+  }
+  
+  .bg-red-100 {
+    background-color: rgba(245, 101, 101, 0.2);
   }
 
-  h2 {
-    font-size: 1.75rem;
-    margin-bottom: 2rem;
+  .bg-green-100 {
+    background-color: rgba(74, 222, 128, 0.2);
   }
 
-  input {
-    padding: 0.75rem;
-    font-size: 0.95rem;
-  }
-
-  .submit-btn {
-    padding: 0.875rem;
-    font-size: 1rem;
-  }
-}
-
-/* Handle very small screens */
-@media (max-width: 320px) {
-  .login-form {
-    padding: 1.25rem;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-}
-
-/* Handle landscape orientation */
-@media screen and (orientation: landscape) and (max-height: 500px) {
-  .login-form {
-    padding: 1.25rem;
-  }
-
-  h2 {
-    margin-bottom: 1rem;
-  }
-
-  .form-group {
-    margin-bottom: 1rem;
+  .text-green-500 {
+    color: #4ade80;
   }
 }
 </style>

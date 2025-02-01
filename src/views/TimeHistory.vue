@@ -1,47 +1,120 @@
 <template>
-  <div class="history-container">
-    <h2>Time Records History</h2>
+  <div class="min-h-screen bg-gray-50 flex flex-col items-center">
+    <!-- Header Banner -->
+    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full flex items-center justify-between">
+      <!-- Left side: Logo and Title -->
+      <div class="flex items-center ml-8">
+        <svg 
+          class="h-8 w-8 text-white mr-3" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+          />
+        </svg>
+        <h1 class="text-2xl font-bold text-white">QR Scanner</h1>
+      </div>
+
+      <!-- Right side: Navigation -->
+      <nav class="flex items-center mr-8">
+        <router-link 
+          to="/scanner" 
+          class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
+        >
+          Dashboard
+        </router-link>
+        <router-link 
+          to="/history" 
+          class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
+        >
+          History
+        </router-link>
+        <button 
+          @click="logout" 
+          class="ml-4 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all duration-200"
+        >
+          Logout
+        </button>
+      </nav>
+    </div>
     
-    <div class="table-container">
-      <table class="history-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Description</th>
-            <th>Date & Time</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="loading">
-            <td colspan="6" class="loading-message">Loading records...</td>
-          </tr>
-          <tr v-else-if="combinedHistory.length === 0">
-            <td colspan="6" class="no-records">No time records found</td>
-          </tr>
-          <tr v-else v-for="record in combinedHistory" :key="record.id" 
-              :class="{'time-in': record.description === 'Time In', 'time-out': record.description === 'Time Out'}">
-            <td>{{ record.personDetails ? `${record.personDetails.firstname} ${record.personDetails.lastname}` : 'Unknown' }}</td>
-            <td>{{ record.personDetails ? record.personDetails.email : 'N/A' }}</td>
-            <td>{{ record.personDetails ? record.personDetails.phone : 'N/A' }}</td>
-            <td>{{ record.description }}</td>
-            <td>{{ formatDateTime(record.datetime) }}</td>
-            <td>
-              <button 
-                v-if="record.personDetails"
-                class="edit-button"
-                @click="openProfile(record.personDetails.id)"
-                title="Edit Profile"
-              >
-                <span class="button-text">Edit Profile</span>
-                <span class="icon">📝</span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Main Content -->
+    <div class="max-w-7xl w-full px-4 sm:px-6 lg:px-8 mx-auto flex-grow">
+      <div class="relative -mt-24 flex flex-col items-center">
+        <div class="bg-white rounded-xl shadow-md p-8 w-full mt-12">
+          <h2>Time Records History</h2>
+          
+          <div class="table-container">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Description</th>
+                  <th>Date & Time</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="loading">
+                  <td colspan="6" class="loading-message">Loading records...</td>
+                </tr>
+                <tr v-else-if="combinedHistory.length === 0">
+                  <td colspan="6" class="no-records">No time records found</td>
+                </tr>
+                <tr v-else v-for="record in combinedHistory" :key="record.id" 
+                    :class="{'time-in': record.description === 'Time In', 'time-out': record.description === 'Time Out'}">
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <img 
+                        :src="getProfileImage(record.personDetails?.gender)"
+                        :alt="`${record.personDetails?.firstname}'s profile`"
+                        class="w-8 h-8 rounded-full"
+                      />
+                      <span class="px-3">{{ record.personDetails ? `${record.personDetails.firstname} ${record.personDetails.lastname}` : 'Unknown' }}</span>
+                    </div>
+                  </td>
+                  <td>{{ record.personDetails ? record.personDetails.email : 'N/A' }}</td>
+                  <td>{{ record.personDetails ? record.personDetails.phone : 'N/A' }}</td>
+                  <td>{{ record.description }}</td>
+                  <td>{{ formatDateTime(record.datetime) }}</td>
+                  <td>
+                    <button 
+                      v-if="record.personDetails"
+                      class="edit-button"
+                      @click="openProfile(record.personDetails.id)"
+                      title="Edit Profile"
+                    >
+                      <span class="button-text">Edit Profile</span>
+                      <span class="icon">📝</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Banner -->
+    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full mt-auto"></div>
+
+    <!-- Success Toast -->
+    <div 
+      v-if="showSuccess" 
+      class="fixed top-4 right-4 bg-orange-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2 transition-all duration-500 ease-in-out"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <span>Successfully scanned!</span>
     </div>
   </div>
 </template>
@@ -56,7 +129,10 @@ export default {
       history: [],
       people: [],
       loading: true,
-      error: null
+      error: null,
+      maleImage: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/male/45.png',
+      femaleImage: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/45.png',
+      showSuccess: false
     }
   },
   computed: {
@@ -74,6 +150,11 @@ export default {
     this.fetchAllData();
   },
   methods: {
+    logout() {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      this.$router.push('/login')
+    },
     async fetchAllData() {
       try {
         this.loading = true;
@@ -108,219 +189,219 @@ export default {
     },
     openProfile(personId) {
       window.open(`/profile?id=${personId}`, '_blank');
+    },
+    getProfileImage(gender) {
+      return gender === 'male' ? this.maleImage : this.femaleImage
+    },
+    getGenderIcon(gender) {
+      return gender === 'male' 
+        ? 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/male/86.png'
+        : 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/86.png'
+    },
+    editRecord(record) {
+      console.log('Editing record:', record)
+    },
+    showSuccessToast() {
+      this.showSuccess = true
+      setTimeout(() => {
+        this.showSuccess = false
+      }, 2000) // Hide after 2 seconds to match login/register
     }
   }
 }
 </script>
 
 <style scoped>
-.history-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+/* Navigation styles */
+.nav-link {
+  position: relative;
 }
 
-h2 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 30px;
-  font-size: 2rem;
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: rgb(255, 237, 213);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
 
+.nav-link:hover::after,
+.router-link-active::after {
+  width: 70%;
+}
+
+.router-link-active {
+  font-weight: 500;
+  color: rgb(255, 237, 213);
+}
+
+/* Enhanced Table Styles */
 .table-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
+  max-height: 400px; /* Fixed height for 4-5 rows */
+  overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .history-table {
   width: 100%;
-  border-collapse: collapse;
-  background: white;
-}
-
-th, td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-  white-space: nowrap;
-  min-width: 120px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: white;
 }
 
 th {
   background-color: #f8f9fa;
+  color: #4b5563;
   font-weight: 600;
-  color: #2c3e50;
+  padding: 16px;
+  text-align: left;
+  border-bottom: 2px solid #e5e7eb;
+  white-space: nowrap;
 }
 
-tr:hover {
-  background-color: #f8f9fa;
+td {
+  padding: 16px;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+tr:hover td {
+  background-color: #f9fafb;
 }
 
 .time-in {
-  border-left: 4px solid #2563eb;
+  border-left: 4px solid #10b981;  /* Emerald-500 */
 }
 
 .time-out {
-  border-left: 4px solid #dc2626;
+  border-left: 4px solid #ef4444;  /* Red-500 */
 }
 
 .loading-message, .no-records {
   text-align: center;
-  padding: 20px;
-  color: #666;
+  padding: 24px;
+  color: #6b7280;
+  font-weight: 500;
 }
 
-.error-message {
-  color: #dc2626;
-  text-align: center;
-  margin: 20px 0;
+/* Edit button styles */
+.edit-button {
+  padding: 8px 12px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.history-table td:nth-child(2),
-.history-table td:nth-child(3) {
-  color: #666;
+.edit-button:hover {
+  background-color: #e5e7eb;
+  color: #374151;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .history-container {
-    padding: 10px;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-  }
-
-  th, td {
-    padding: 10px;
-    font-size: 0.9rem;
-  }
-
-  .table-container {
-    border-radius: 8px;
-    overflow-x: auto;
-  }
+.edit-button .icon {
+  font-size: 1.1em;
 }
 
-@media (max-width: 1024px) {
-  .history-table {
-    font-size: 0.9rem;
-  }
+/* Sticky Header */
+.history-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa;
+}
 
-  .history-table th,
-  .history-table td {
-    padding: 10px 8px;
-  }
+/* Scrollbar Styling */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .table-container {
-    background: #1a1c20;
-  }
-
   .history-table {
-    background: #1a1c20;
+    background-color: #1f2937;
   }
 
   th {
-    background-color: #2c3e50;
-    color: #fff;
+    background-color: #374151;
+    color: #e5e7eb;
+    border-bottom-color: #4b5563;
   }
 
   td {
-    color: #fff;
+    color: #e5e7eb;
+    border-bottom-color: #4b5563;
   }
 
-  tr:hover {
-    background-color: #2c3e50;
+  tr:hover td {
+    background-color: #2d3748;
   }
 
   .loading-message, .no-records {
-    color: #95a5a6;
+    color: #9ca3af;
   }
 
-  .history-table td:nth-child(2),
-  .history-table td:nth-child(3) {
-    color: #95a5a6;
-  }
-}
-
-/* Add styles for the edit button */
-.edit-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
-
-.edit-button:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
-}
-
-.edit-button:active {
-  transform: translateY(0);
-}
-
-.button-text {
-  display: inline-block;
-}
-
-.icon {
-  display: inline-block;
-  font-size: 1.1rem;
-}
-
-/* Responsive styles for the button */
-@media (max-width: 768px) {
-  .button-text {
-    display: none;
-  }
-  
   .edit-button {
-    padding: 8px;
+    background-color: #374151;
+    color: #e5e7eb;
   }
-  
-  .icon {
-    margin: 0;
-  }
-}
 
-/* Dark mode support for the button */
-@media (prefers-color-scheme: dark) {
-  .edit-button {
-    background-color: #2ecc71;
-  }
-  
   .edit-button:hover {
-    background-color: #27ae60;
+    background-color: #4b5563;
+    color: #f3f4f6;
+  }
+
+  .history-table thead {
+    background-color: #1f2937;
+  }
+
+  .table-container::-webkit-scrollbar-track {
+    background: #374151;
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+    background: #4b5563;
+  }
+
+  .table-container::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
   }
 }
 
-/* Update table styles for the new column */
-.history-table th:last-child,
-.history-table td:last-child {
-  text-align: center;
-  min-width: 100px;
-}
+/* Responsive styles */
+@media (max-width: 768px) {
+  th, td {
+    padding: 12px;
+    font-size: 0.875rem;
+  }
 
-@media (max-width: 480px) {
-  .history-table th:last-child,
-  .history-table td:last-child {
-    min-width: 50px;
+  .edit-button {
+    padding: 6px 10px;
   }
 }
 </style> 

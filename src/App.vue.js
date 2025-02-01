@@ -1,94 +1,13 @@
-import { RouterLink, RouterView } from 'vue-router';
-import HelloWorld from './components/HelloWorld.vue'; /* PartiallyEnd: #3632/scriptSetup.vue */
+import { RouterView } from 'vue-router';
 function __VLS_template() {
     const __VLS_ctx = {};
     let __VLS_components;
     let __VLS_directives;
-    ['router-link-exact-active', 'logo',];
-    // CSS variable injection 
-    // CSS variable injection end 
-    __VLS_elementAsFunction(__VLS_intrinsicElements.header, __VLS_intrinsicElements.header)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.img)({
-        alt: ("Vue logo"),
-        ...{ class: ("logo") },
-        src: ("@/assets/logo.svg"),
-        width: ("125"),
-        height: ("125"),
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("wrapper") },
-    });
-    // @ts-ignore
-    /** @type { [typeof HelloWorld, ] } */ ;
-    // @ts-ignore
-    const __VLS_0 = __VLS_asFunctionalComponent(HelloWorld, new HelloWorld({
-        msg: ("You did it!"),
-    }));
-    const __VLS_1 = __VLS_0({
-        msg: ("You did it!"),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_0));
-    __VLS_elementAsFunction(__VLS_intrinsicElements.nav, __VLS_intrinsicElements.nav)({});
-    const __VLS_5 = {}.RouterLink;
-    /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
-    // @ts-ignore
-    const __VLS_6 = __VLS_asFunctionalComponent(__VLS_5, new __VLS_5({
-        to: ("/Login"),
-    }));
-    const __VLS_7 = __VLS_6({
-        to: ("/Login"),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_6));
-    __VLS_10.slots.default;
-    var __VLS_10;
-    const __VLS_11 = {}.RouterLink;
-    /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
-    // @ts-ignore
-    const __VLS_12 = __VLS_asFunctionalComponent(__VLS_11, new __VLS_11({
-        to: ("/Register"),
-    }));
-    const __VLS_13 = __VLS_12({
-        to: ("/Register"),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_12));
-    __VLS_16.slots.default;
-    var __VLS_16;
-    const __VLS_17 = {}.RouterLink;
-    /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
-    // @ts-ignore
-    const __VLS_18 = __VLS_asFunctionalComponent(__VLS_17, new __VLS_17({
-        to: ("/about"),
-    }));
-    const __VLS_19 = __VLS_18({
-        to: ("/about"),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_18));
-    __VLS_22.slots.default;
-    var __VLS_22;
-    const __VLS_23 = {}.RouterLink;
-    /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
-    // @ts-ignore
-    const __VLS_24 = __VLS_asFunctionalComponent(__VLS_23, new __VLS_23({
-        to: ("/scanner"),
-    }));
-    const __VLS_25 = __VLS_24({
-        to: ("/scanner"),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_24));
-    __VLS_28.slots.default;
-    var __VLS_28;
-    const __VLS_29 = {}.RouterLink;
-    /** @type { [typeof __VLS_components.RouterLink, typeof __VLS_components.RouterLink, ] } */ ;
-    // @ts-ignore
-    const __VLS_30 = __VLS_asFunctionalComponent(__VLS_29, new __VLS_29({
-        to: ("/history"),
-    }));
-    const __VLS_31 = __VLS_30({
-        to: ("/history"),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_30));
-    __VLS_34.slots.default;
-    var __VLS_34;
-    const __VLS_35 = {}.RouterView;
+    const __VLS_0 = {}.RouterView;
     /** @type { [typeof __VLS_components.RouterView, ] } */ ;
     // @ts-ignore
-    const __VLS_36 = __VLS_asFunctionalComponent(__VLS_35, new __VLS_35({}));
-    const __VLS_37 = __VLS_36({}, ...__VLS_functionalComponentArgsRest(__VLS_36));
-    ['logo', 'wrapper',];
+    const __VLS_1 = __VLS_asFunctionalComponent(__VLS_0, new __VLS_0({}));
+    const __VLS_2 = __VLS_1({}, ...__VLS_functionalComponentArgsRest(__VLS_1));
     var __VLS_slots;
     var $slots;
     let __VLS_inheritedAttrs;
@@ -107,9 +26,7 @@ function __VLS_template() {
 const __VLS_self = (await import('vue')).defineComponent({
     setup() {
         return {
-            RouterLink: RouterLink,
             RouterView: RouterView,
-            HelloWorld: HelloWorld,
         };
     },
 });

@@ -1,36 +1,213 @@
 <template>
-  <div class="qr-scanner-container">
-    <div class="qr-scanner">
-      <h2>QR Code Scanner</h2>
-      <div id="reader"></div>
-      
-      <div v-if="error" class="error-message">
-        {{ error }}
-        <button class="rescan-button" @click="restartScanner">Re-scan</button>
+  <div class="min-h-screen bg-gray-50 flex flex-col items-center">
+    <!-- Header Banner -->
+    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full flex items-center justify-between">
+      <!-- Left side: Logo and Title -->
+      <div class="flex items-center ml-8">
+        <svg 
+          class="h-8 w-8 text-white mr-3" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+          />
+        </svg>
+        <h1 class="text-2xl font-bold text-white">QR Scanner</h1>
+      </div>
+
+      <!-- Right side: Navigation -->
+      <nav class="flex items-center mr-8">
+        <router-link 
+          to="/scanner" 
+          class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
+        >
+          Dashboard
+        </router-link>
+        <router-link 
+          to="/history" 
+          class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
+        >
+          History
+        </router-link>
+        <button 
+          @click="logout" 
+          class="ml-4 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all duration-200"
+        >
+          Logout
+        </button>
+      </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="max-w-4xl w-full px-4 sm:px-6 lg:px-8 mx-auto flex-grow">
+      <div class="relative -mt-24 flex flex-col items-center">
+        <!-- Scanner Section -->
+        <div class="bg-white rounded-xl shadow-md p-8 w-full max-w-2xl mt-12 pt-8">
+          <div class="bg-gray-50 rounded-xl p-4">
+            <div id="reader" class="overflow-hidden rounded-lg"></div>
+          </div>
+          <p class="text-sm text-gray-500 text-center mt-4">
+            Position the QR code within the frame to scan
+          </p>
+        </div>
       </div>
     </div>
 
-    <!-- Popup Modal -->
-    <div v-if="userData" class="modal-overlay">
-      <div class="modal-content">
-        <h3>User Details Found!</h3>
-        <div class="user-details">
-          <p><strong>Name:</strong> {{ userData.firstname }} {{ userData.lastname }}</p>
-          <p><strong>Email:</strong> {{ userData.email }}</p>
-          <p><strong>Phone:</strong> {{ userData.phone }}</p>
-          <p><strong>QR Code:</strong> {{ userData.qr_code }}</p>
+    <!-- Footer Banner -->
+    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full mt-auto"></div>
+
+    <!-- User Details Modal -->
+    <div v-if="userData" class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 max-w-xl w-full mx-4 transform animate-popup shadow-2xl">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6 pt-2">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+              <svg 
+                class="w-6 h-6 text-green-600" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">User Details Found!</h3>
+          </div>
+          <button 
+            @click="restartScanner"
+            class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-        
-        <div class="time-buttons">
-          <button class="time-in-button" @click="handleTimeIn" :disabled="loading">
+
+        <!-- User Info -->
+        <div class="bg-gray-50 rounded-xl p-6 mb-6 pt-6 pb-6">
+          <div class="flex items-center mb-6 pt-2 pb-4">
+            <div class="w-16 h-16 rounded-full overflow-hidden border-4 border-white shadow-md">
+              <img 
+                :src="`https://ui-avatars.com/api/?name=${userData.firstname}+${userData.lastname}&background=random`"
+                alt="User Avatar"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="ml-4">
+              <h4 class="text-lg font-semibold text-gray-900 pb-1">
+                {{ userData.firstname }} {{ userData.lastname }}
+              </h4>
+              <p class="text-sm text-gray-500">{{ userData.email }}</p>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4 pt-2">
+            <div class="bg-white rounded-lg p-4">
+              <p class="text-sm text-gray-500 pb-1">Phone</p>
+              <p class="text-gray-900 font-medium pt-1">{{ userData.phone }}</p>
+            </div>
+            <div class="bg-white rounded-lg p-4">
+              <p class="text-sm text-gray-500 pb-1">QR Code</p>
+              <p class="text-gray-900 font-medium font-mono text-sm pt-1">{{ userData.qr_code }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-4 pt-4 pb-4">
+          <button 
+            @click="handleTimeIn"
+            :disabled="loading"
+            class="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl
+                   font-medium hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50"
+          >
+            <svg v-if="loading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+            </svg>
             {{ loading ? 'Processing...' : 'Time In' }}
           </button>
-          <button class="time-out-button" @click="handleTimeOut" :disabled="loading">
+          <button 
+            @click="handleTimeOut"
+            :disabled="loading"
+            class="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl
+                   font-medium hover:bg-red-700 transition-colors duration-200 disabled:opacity-50"
+          >
+            <svg v-if="loading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+            </svg>
             {{ loading ? 'Processing...' : 'Time Out' }}
           </button>
         </div>
-        
-        <button class="rescan-button" @click="restartScanner">Re-scan</button>
+
+        <!-- Rescan Button -->
+        <button 
+          @click="restartScanner"
+          class="w-full mt-4 px-6 py-3 bg-gray-800 text-white rounded-xl font-medium
+                 hover:bg-gray-900 transition-colors duration-200"
+        >
+          Re-scan QR Code
+        </button>
+      </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div v-if="showSuccess" 
+         class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 flex flex-col items-center transform animate-popup">
+        <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
+          <svg 
+            class="w-12 h-12 text-green-500 animate-success" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="3" 
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <p class="text-xl font-semibold text-gray-900">{{ successTitle }}</p>
+        <p class="text-gray-600 mt-2">{{ successMessage }}</p>
+      </div>
+    </div>
+
+    <!-- Error Popup -->
+    <div v-if="showError" 
+         class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 flex flex-col items-center transform animate-popup">
+        <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mb-4">
+          <svg 
+            class="w-12 h-12 text-red-500 animate-error" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="3" 
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </div>
+        <p class="text-xl font-semibold text-gray-900">{{ errorTitle }}</p>
+        <p class="text-gray-600 mt-2">{{ errorMessage }}</p>
       </div>
     </div>
   </div>
@@ -48,12 +225,20 @@ export default {
       scannedResult: null,
       error: null,
       userData: null,
-      loading: false
+      loading: false,
+      showSuccess: false,
+      successTitle: '',
+      successMessage: '',
+      showError: false,
+      errorTitle: '',
+      errorMessage: ''
     }
   },
   mounted() {
-    console.log('QrScanner mounted');
-    this.initScanner();
+    // Initialize scanner immediately
+    this.$nextTick(() => {
+      this.initScanner();
+    });
   },
   beforeUnmount() {
     if (this.scanner) {
@@ -66,7 +251,9 @@ export default {
       try {
         this.scanner = new Html5QrcodeScanner('reader', {
           qrbox: { width: 250, height: 250 },
-          fps: 20
+          fps: 20,
+          rememberLastUsedCamera: true,
+          showTorchButtonIfSupported: true
         });
         console.log('Scanner created:', this.scanner);
         this.scanner.render(this.onScanSuccess, this.onScanError);
@@ -83,8 +270,14 @@ export default {
         const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
         console.log('API Response:', response.data);
         
+        // Log all QR codes from the response
+        console.log('Available QR codes in database:', response.data.map(user => user.qr_code));
+        
         const user = response.data.find(user => {
-          console.log('Comparing:', user.qr_code, decodedText);
+          console.log('Comparing:');
+          console.log('Database QR:', user.qr_code, typeof user.qr_code);
+          console.log('Scanned QR:', decodedText, typeof decodedText);
+          console.log('Match?:', user.qr_code === decodedText);
           return user.qr_code === decodedText;
         });
 
@@ -92,8 +285,10 @@ export default {
           console.log('User found:', user);
           this.userData = user;
           this.error = null;
+          // Clear scanner when user is found
           if (this.scanner) {
-            this.scanner.pause();
+            console.log('Clearing scanner - user found');
+            await this.scanner.clear();
           }
         } else {
           console.log('No user found for QR code:', decodedText);
@@ -101,7 +296,7 @@ export default {
           this.userData = null;
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error details:', error);
         this.error = 'Error finding user';
         this.userData = null;
       }
@@ -119,25 +314,32 @@ export default {
       try {
         this.loading = true;
         const timeRecord = {
-          description,
+          description: description,
           datetime: this.formatDateTime(new Date()),
           person_id: this.userData.id
         };
 
-        console.log('Sending time record:', timeRecord);
-        
-        const response = await axios.post(
-          'https://qrscannerdb-production.up.railway.app/api/call/history',
-          timeRecord
-        );
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/history', timeRecord);
         
         if (response.data) {
-          alert(`${description} recorded successfully!`);
-          this.restartScanner();
+          this.successTitle = `${description} Successful`;
+          this.successMessage = `Time recorded for ${this.userData.firstname}`;
+          this.showSuccess = true;
+          this.userData = null;
+          
+          setTimeout(() => {
+            this.closeSuccess();
+          }, 2000);
         }
       } catch (error) {
         console.error('Time record error:', error);
-        alert(`Failed to record ${description}. Please try again.`);
+        this.errorTitle = 'Time Record Failed';
+        this.errorMessage = `Unable to record ${description}. Please try again.`;
+        this.showError = true;
+        
+        setTimeout(() => {
+          this.closeError();
+        }, 2000);
       } finally {
         this.loading = false;
       }
@@ -155,11 +357,34 @@ export default {
     },
     restartScanner() {
       if (this.scanner) {
+        console.log('Clearing old scanner');
         this.scanner.clear();
         this.userData = null;
         this.error = null;
         this.scannedResult = null;
-        this.initScanner();
+        console.log('Initializing new scanner');
+        setTimeout(() => {
+          this.initScanner();
+        }, 100); // Small delay to ensure clean initialization
+      }
+    },
+    closeSuccess() {
+      this.showSuccess = false;
+      this.successTitle = '';
+      this.successMessage = '';
+      this.restartScanner();
+    },
+    closeError() {
+      this.showError = false;
+      this.errorTitle = '';
+      this.errorMessage = '';
+    },
+    async logout() {
+      try {
+        // Add your logout logic here
+        await this.$router.push('/login');
+      } catch (error) {
+        console.error('Logout error:', error);
       }
     }
   }
@@ -167,118 +392,21 @@ export default {
 </script>
 
 <style scoped>
-.qr-scanner-container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.qr-scanner {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 20px;
-}
-
+/* Scanner Styles */
 #reader {
   width: 100%;
   margin: 0 auto;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
-.success-message {
-  margin-top: 20px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 8px;
+#reader video {
+  border-radius: 0.5rem;
 }
 
-.user-details {
-  margin: 15px 0;
-}
-
-.user-details p {
-  margin: 8px 0;
-}
-
-.time-buttons {
-  display: flex;
-  gap: 1rem;
-  margin: 1rem 0;
-  justify-content: center;
-}
-
-.time-in-button,
-.time-out-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 120px;
-}
-
-.time-in-button {
-  background-color: #2563eb;
-  color: white;
-}
-
-.time-out-button {
-  background-color: #dc2626;
-  color: white;
-}
-
-.time-in-button:hover,
-.time-out-button:hover {
-  transform: translateY(-2px);
-}
-
-.time-in-button:hover {
-  background-color: #1d4ed8;
-}
-
-.time-out-button:hover {
-  background-color: #b91c1c;
-}
-
-.rescan-button {
-  display: block;
-  margin: 15px auto 0;
-  padding: 8px 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.error-message {
-  color: #dc2626;
-  text-align: center;
-  margin-top: 15px;
-}
-
-@media (max-width: 480px) {
-  .qr-scanner-container {
-    padding: 10px;
-  }
-  
-  .time-buttons {
-    flex-direction: column;
-  }
-  
-  .time-in-button,
-  .time-out-button {
-    width: 100%;
-  }
+/* Center the scanner viewport */
+#reader div:first-child {
+  margin: 0 auto;
 }
 
 /* Modal Styles */
@@ -294,6 +422,7 @@ h2 {
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease;
+  padding: 1rem;
 }
 
 .modal-content {
@@ -412,23 +541,197 @@ h2 {
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 480px) {
-  .modal-content {
-    width: 95%;
+@media (max-width: 768px) {
+  .max-w-4xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .grid {
+    gap: 1rem;
+  }
+  
+  .p-8 {
     padding: 1.5rem;
   }
+}
 
-  .time-buttons {
-    flex-direction: column;
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .bg-gray-50 {
+    background-color: #1a1c20;
   }
+  
+  .bg-white {
+    background-color: #2d3748;
+  }
+  
+  .text-gray-900 {
+    color: #f3f4f6;
+  }
+  
+  .text-gray-600 {
+    color: #d1d5db;
+  }
+  
+  .text-gray-500 {
+    color: #9ca3af;
+  }
+  
+  .border-white {
+    border-color: #374151;
+  }
+}
 
-  .time-in-button,
-  .time-out-button {
-    width: 100%;
+/* Enhanced Modal Animations */
+@keyframes popup {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
   }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-  .user-details {
-    padding: 0.75rem;
+.animate-popup {
+  animation: popup 0.2s ease-out forwards;
+}
+
+/* Scanner Modal Styles */
+.backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+}
+
+#reader {
+  width: 100% !important;
+  border: none !important;
+}
+
+#reader * {
+  border-radius: 0.5rem;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: #1f2937;
   }
+  
+  .bg-gray-50 {
+    background-color: #111827;
+  }
+  
+  .text-gray-900 {
+    color: #f3f4f6;
+  }
+  
+  .text-gray-500 {
+    color: #9ca3af;
+  }
+  
+  .text-gray-400 {
+    color: #9ca3af;
+  }
+  
+  .text-gray-400:hover {
+    color: #f3f4f6;
+  }
+  
+  .bg-blue-100 {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .max-w-xl {
+    width: 95%;
+    margin: 10px;
+  }
+}
+
+/* Success Popup Animations */
+@keyframes popup {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes success {
+  0% {
+    stroke-dasharray: 0, 100;
+  }
+  100% {
+    stroke-dasharray: 100, 100;
+  }
+}
+
+.animate-popup {
+  animation: popup 0.5s ease-out forwards;
+}
+
+.animate-success {
+  stroke-dasharray: 0, 100;
+  animation: success 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: #2d3748;
+  }
+  
+  .text-gray-900 {
+    color: #fff;
+  }
+  
+  .text-gray-600 {
+    color: #a0aec0;
+  }
+  
+  .bg-green-100 {
+    background-color: rgba(74, 222, 128, 0.2);
+  }
+  
+  .text-green-500 {
+    color: #4ade80;
+  }
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: rgb(255, 237, 213);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after,
+.router-link-active::after {
+  width: 70%;
+}
+
+.router-link-active {
+  font-weight: 500;
+  color: rgb(255, 237, 213);
 }
 </style>

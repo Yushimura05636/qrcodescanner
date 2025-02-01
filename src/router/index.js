@@ -11,14 +11,19 @@ const routes = [
         component: () => import('../views/Register.vue')
     },
     {
-        path: '/qrscanner',
-        name: 'qrscanner',
+        path: '/scanner',
+        name: 'scanner',
         component: () => import('../views/QrScanner.vue')
     },
     {
         path: '/about',
         name: 'about',
         component: () => import('../views/AboutView.vue')
+    },
+    {
+        path: '/history',
+        name: 'history',
+        component: () => import('../views/TimeHistory.vue')
     }
 ];
 const router = createRouter({
