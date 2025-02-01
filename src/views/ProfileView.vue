@@ -234,7 +234,11 @@ export default {
     }
   },
   created() {
-    const id = this.$route.query.id;
+    // Check for both query parameter and route parameter
+    const queryId = this.$route.query.id;
+    const paramId = this.$route.params.id;
+    const id = queryId || paramId;
+
     if (id) {
       this.fetchProfile(id);
     } else {
