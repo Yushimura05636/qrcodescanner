@@ -26,6 +26,20 @@
       </div>
 
       <div class="form-group">
+        <label for="gender">Gender</label>
+        <select 
+          id="gender"
+          v-model="gender"
+          required
+          class="gender-select"
+        >
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label for="phone">Phone</label>
         <input 
           type="tel" 
@@ -73,6 +87,7 @@ export default {
       lastname: '',
       email: '',
       phone: '',
+      gender: '',
       qrString: null
     }
   },
@@ -87,11 +102,12 @@ export default {
     },
     async handleRegister() {
       try {
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/people', {
+        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call', {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,
           phone: this.phone,
+          gender: this.gender,
           qr_code: this.generateQRString()
         });
         console.log('Response:', response.data);
@@ -284,5 +300,27 @@ input:focus {
   background: #e5e7eb;
   padding: 0.5rem;
   border-radius: 4px;
+}
+
+.gender-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+.gender-select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 </style>

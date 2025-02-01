@@ -7,6 +7,7 @@
     <table class="table table-hover">
       <thead>
         <tr>
+          <th>Gender</th>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Email</th>
@@ -16,9 +17,16 @@
       </thead>
       <tbody>
         <tr v-if="people.length === 0">
-          <td colspan="5">Loading people...</td>
+          <td colspan="6">Loading people...</td>
         </tr>
         <tr v-else v-for="person in people" :key="person.id" class="table-secondary">
+          <td scope="row" class="gender-cell">
+            <img 
+              :src="getGenderImage(person.gender)" 
+              :alt="person.gender"
+              class="gender-icon"
+            >
+          </td>
           <td scope="row">{{ person.firstname }}</td>
           <td scope="row">{{ person.lastname }}</td>
           <td scope="row">{{ person.email }}</td>
@@ -76,6 +84,10 @@ export default {
       user: [],
       showModal: false,
       selectedQR: '',
+      genderImages: {
+        male: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/male/45.png',
+        female: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/45.png'
+      }
     }
   },
   created() {
@@ -94,6 +106,10 @@ export default {
     showQRModal(qrCode) {
       this.selectedQR = qrCode;
       this.showModal = true;
+    },
+    getGenderImage(gender) {
+      const lowerGender = gender?.toLowerCase() || 'male';
+      return this.genderImages[lowerGender] || this.genderImages.male;
     }
   },
   async mounted() {
@@ -190,5 +206,24 @@ td {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
+
+.gender-cell {
+  text-align: center;
+  vertical-align: middle !important;
+}
+
+.gender-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+  transition: transform 0.2s ease;
+}
+
+.gender-icon:hover {
+  transform: scale(1.1);
+  border-color: #4CAF50;
 }
 </style>
