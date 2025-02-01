@@ -324,8 +324,8 @@ export default {
     async updateProfile() {
       try {
         this.loading = true
-        const response = await fetch('/api/profile/update', {
-          method: 'POST',
+        const response = await fetch(`https://qrscannerdb-production.up.railway.app/api/call/people/${this.person.id}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -336,7 +336,7 @@ export default {
         if (response.ok) {
           this.showSuccess = true
           setTimeout(() => {
-            this.$router.push('/history') // Changed from '/history'
+            window.location.href = '/history' // Changed from '/history'
           }, 1500)
         } else {
           throw new Error('Failed to update profile')

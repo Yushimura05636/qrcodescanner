@@ -188,7 +188,7 @@ export default {
       });
     },
     openProfile(personId) {
-      window.open(`/profile?id=${personId}`, '_blank');
+      window.open(`/profile/${personId}`, '_blank');
     },
     getProfileImage(gender) {
       return gender === 'male' ? this.maleImage : this.femaleImage
