@@ -20,33 +20,43 @@ export default (await import('vue')).defineComponent({
             return this.person.gender === 'male' ? this.maleImage : this.femaleImage;
         }
     },
-    created() {
-        // Check for both query parameter and route parameter
-        const queryId = this.$route.query.id;
-        const paramId = this.$route.params.id;
-        const id = queryId || paramId;
-        if (id) {
-            this.fetchProfile(id);
+    async created() {
+        try {
+            // Check for both query parameter and route parameter
+            const queryId = this.$route.query.id;
+            const paramId = this.$route.params.id;
+            const id = queryId || paramId;
+            if (!id) {
+                this.error = 'No profile ID provided';
+                this.loading = false;
+                return;
+            }
+            await this.fetchProfile(id);
         }
-        else {
-            this.error = 'No profile ID provided';
+        catch (error) {
+            console.error('Error in created hook:', error);
+            this.error = 'Failed to load profile';
+        }
+        finally {
             this.loading = false;
         }
     },
     methods: {
         async fetchProfile(id) {
             try {
-                this.loading = true;
                 const response = await axios.get(`https://qrscannerdb-production.up.railway.app/api/call/people/${id}`);
-                this.person = response.data;
-                this.originalPerson = { ...response.data };
+                if (response.data) {
+                    this.person = response.data;
+                    this.originalPerson = { ...response.data };
+                }
+                else {
+                    this.error = 'Profile not found';
+                }
             }
             catch (error) {
                 console.error('Error fetching profile:', error);
-                this.error = 'Failed to load profile';
-            }
-            finally {
-                this.loading = false;
+                this.error = error.response?.data?.message || 'Failed to load profile';
+                throw error;
             }
         },
         startEditing() {
@@ -206,128 +216,161 @@ function __VLS_template() {
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
         ...{ class: ("relative -mt-24 flex flex-col items-center") },
     });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("bg-white rounded-xl shadow-md p-8 w-full mt-12") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("flex flex-col items-center mb-8") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("flex flex-col items-center space-y-2 mb-8") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ onClick: (...[$event]) => {
-                __VLS_ctx.showQrModal = true;
-            } },
-        ...{ class: ("w-48 h-48 bg-white rounded-lg shadow-md p-3 cursor-pointer hover:shadow-lg transition-shadow duration-200") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.img)({
-        src: ((`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(__VLS_ctx.person?.qr_code)}`)),
-        alt: ("QR Code"),
-        ...{ class: ("w-full h-full object-contain") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({
-        ...{ class: ("text-sm text-gray-600") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.h2, __VLS_intrinsicElements.h2)({
-        ...{ class: ("text-2xl font-bold text-gray-900 mb-6") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("grid grid-cols-1 lg:grid-cols-3 gap-8") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("flex flex-col items-center space-y-4") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("w-32 h-32 rounded-full overflow-hidden border-4 border-orange-100") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.img)({
-        src: ((__VLS_ctx.getProfileImage(__VLS_ctx.person.gender))),
-        alt: ("Profile"),
-        ...{ class: ("w-full h-full object-cover") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({
-        ...{ class: ("text-lg font-semibold text-gray-900") },
-    });
-    (__VLS_ctx.person.firstname);
-    (__VLS_ctx.person.lastname);
-    __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({
-        ...{ class: ("text-gray-600") },
-    });
-    (__VLS_ctx.person.email);
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("lg:col-span-2") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.form, __VLS_intrinsicElements.form)({
-        ...{ onSubmit: (__VLS_ctx.updateProfile) },
-        ...{ class: ("space-y-6") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("grid grid-cols-1 md:grid-cols-2 gap-6") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
-        ...{ class: ("block text-sm font-medium text-gray-700") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
-        type: ("text"),
-        value: ((__VLS_ctx.person.firstname)),
-        ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
-        ...{ class: ("block text-sm font-medium text-gray-700") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
-        type: ("text"),
-        value: ((__VLS_ctx.person.lastname)),
-        ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
-        ...{ class: ("block text-sm font-medium text-gray-700") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
-        type: ("email"),
-        ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
-    });
-    (__VLS_ctx.person.email);
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
-        ...{ class: ("block text-sm font-medium text-gray-700") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
-        type: ("tel"),
-        ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
-    });
-    (__VLS_ctx.person.phone);
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
-        ...{ class: ("block text-sm font-medium text-gray-700") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.select, __VLS_intrinsicElements.select)({
-        value: ((__VLS_ctx.person.gender)),
-        ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({
-        value: ("male"),
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({
-        value: ("female"),
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-        ...{ class: ("flex justify-end space-x-4 pt-4") },
-    });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({
-        type: ("submit"),
-        ...{ class: ("px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all duration-200") },
-        disabled: ((__VLS_ctx.loading)),
-    });
-    (__VLS_ctx.loading ? 'Saving...' : 'Save Changes');
-    if (__VLS_ctx.showQrModal) {
+    if (__VLS_ctx.loading) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("bg-white rounded-xl shadow-md p-8 w-full mt-12") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("flex justify-center items-center h-64") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
+    }
+    else if (__VLS_ctx.error) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("bg-white rounded-xl shadow-md p-8 w-full mt-12") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("flex justify-center items-center h-64") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({
+            ...{ class: ("text-red-500") },
+        });
+        (__VLS_ctx.error);
+    }
+    else if (__VLS_ctx.person) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("bg-white rounded-xl shadow-md p-8 w-full mt-12") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("flex flex-col items-center mb-8") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("flex flex-col items-center space-y-2 mb-8") },
+        });
+        if (__VLS_ctx.person.qr_code) {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+                ...{ onClick: (...[$event]) => {
+                        if (!(!((__VLS_ctx.loading))))
+                            return;
+                        if (!(!((__VLS_ctx.error))))
+                            return;
+                        if (!((__VLS_ctx.person)))
+                            return;
+                        if (!((__VLS_ctx.person.qr_code)))
+                            return;
+                        __VLS_ctx.showQrModal = true;
+                    } },
+                ...{ class: ("w-48 h-48 bg-white rounded-lg shadow-md p-3 cursor-pointer hover:shadow-lg transition-shadow duration-200") },
+            });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.img)({
+                src: ((`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(__VLS_ctx.person.qr_code)}`)),
+                alt: ("QR Code"),
+                ...{ class: ("w-full h-full object-contain") },
+            });
+        }
+        __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({
+            ...{ class: ("text-sm text-gray-600") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.h2, __VLS_intrinsicElements.h2)({
+            ...{ class: ("text-2xl font-bold text-gray-900 mb-6") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("grid grid-cols-1 lg:grid-cols-3 gap-8") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("flex flex-col items-center space-y-4") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("w-32 h-32 rounded-full overflow-hidden border-4 border-orange-100") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.img)({
+            src: ((__VLS_ctx.getProfileImage(__VLS_ctx.person.gender))),
+            alt: ("Profile"),
+            ...{ class: ("w-full h-full object-cover") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({
+            ...{ class: ("text-lg font-semibold text-gray-900") },
+        });
+        (__VLS_ctx.person.firstname);
+        (__VLS_ctx.person.lastname);
+        __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({
+            ...{ class: ("text-gray-600") },
+        });
+        (__VLS_ctx.person.email);
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("lg:col-span-2") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.form, __VLS_intrinsicElements.form)({
+            ...{ onSubmit: (__VLS_ctx.updateProfile) },
+            ...{ class: ("space-y-6") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("grid grid-cols-1 md:grid-cols-2 gap-6") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
+        __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
+            ...{ class: ("block text-sm font-medium text-gray-700") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
+            type: ("text"),
+            value: ((__VLS_ctx.person.firstname)),
+            ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
+        __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
+            ...{ class: ("block text-sm font-medium text-gray-700") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
+            type: ("text"),
+            value: ((__VLS_ctx.person.lastname)),
+            ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
+        __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
+            ...{ class: ("block text-sm font-medium text-gray-700") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
+            type: ("email"),
+            ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
+        });
+        (__VLS_ctx.person.email);
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
+        __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
+            ...{ class: ("block text-sm font-medium text-gray-700") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.input, __VLS_intrinsicElements.input)({
+            type: ("tel"),
+            ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
+        });
+        (__VLS_ctx.person.phone);
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
+        __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
+            ...{ class: ("block text-sm font-medium text-gray-700") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.select, __VLS_intrinsicElements.select)({
+            value: ((__VLS_ctx.person.gender)),
+            ...{ class: ("mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({
+            value: ("male"),
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({
+            value: ("female"),
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("flex justify-end space-x-4 pt-4") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({
+            type: ("submit"),
+            ...{ class: ("px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all duration-200") },
+            disabled: ((__VLS_ctx.loading)),
+        });
+        (__VLS_ctx.loading ? 'Saving...' : 'Save Changes');
+    }
+    if (__VLS_ctx.showQrModal && __VLS_ctx.person && __VLS_ctx.person.qr_code) {
         __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
             ...{ onClick: (...[$event]) => {
-                    if (!((__VLS_ctx.showQrModal)))
+                    if (!((__VLS_ctx.showQrModal && __VLS_ctx.person && __VLS_ctx.person.qr_code)))
                         return;
                     __VLS_ctx.showQrModal = false;
                 } },
@@ -342,7 +385,7 @@ function __VLS_template() {
         });
         __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({
             ...{ onClick: (...[$event]) => {
-                    if (!((__VLS_ctx.showQrModal)))
+                    if (!((__VLS_ctx.showQrModal && __VLS_ctx.person && __VLS_ctx.person.qr_code)))
                         return;
                     __VLS_ctx.showQrModal = false;
                 } },
@@ -410,7 +453,7 @@ function __VLS_template() {
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
         ...{ class: ("h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full mt-auto") },
     });
-    ['min-h-screen', 'bg-gray-50', 'flex', 'flex-col', 'items-center', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'flex', 'items-center', 'justify-between', 'flex', 'items-center', 'ml-8', 'h-8', 'w-8', 'text-white', 'mr-3', 'text-2xl', 'font-bold', 'text-white', 'flex', 'items-center', 'mr-8', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'ml-4', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'bg-orange-600', 'rounded-lg', 'hover:bg-orange-700', 'transition-all', 'duration-200', 'max-w-7xl', 'w-full', 'px-4', 'sm:px-6', 'lg:px-8', 'mx-auto', 'flex-grow', 'relative', '-mt-24', 'flex', 'flex-col', 'items-center', 'bg-white', 'rounded-xl', 'shadow-md', 'p-8', 'w-full', 'mt-12', 'flex', 'flex-col', 'items-center', 'mb-8', 'flex', 'flex-col', 'items-center', 'space-y-2', 'mb-8', 'w-48', 'h-48', 'bg-white', 'rounded-lg', 'shadow-md', 'p-3', 'cursor-pointer', 'hover:shadow-lg', 'transition-shadow', 'duration-200', 'w-full', 'h-full', 'object-contain', 'text-sm', 'text-gray-600', 'text-2xl', 'font-bold', 'text-gray-900', 'mb-6', 'grid', 'grid-cols-1', 'lg:grid-cols-3', 'gap-8', 'flex', 'flex-col', 'items-center', 'space-y-4', 'w-32', 'h-32', 'rounded-full', 'overflow-hidden', 'border-4', 'border-orange-100', 'w-full', 'h-full', 'object-cover', 'text-lg', 'font-semibold', 'text-gray-900', 'text-gray-600', 'lg:col-span-2', 'space-y-6', 'grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-6', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'flex', 'justify-end', 'space-x-4', 'pt-4', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'bg-orange-600', 'rounded-lg', 'hover:bg-orange-700', 'transition-all', 'duration-200', 'fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'flex', 'items-center', 'justify-center', 'z-50', 'p-4', 'bg-white', 'rounded-xl', 'p-6', 'max-w-lg', 'w-full', 'flex', 'flex-col', 'items-center', 'space-y-4', 'w-full', 'flex', 'justify-end', 'text-gray-500', 'hover:text-gray-700', 'w-6', 'h-6', 'w-64', 'h-64', 'bg-white', 'rounded-lg', 'shadow-md', 'p-2', 'w-full', 'h-full', 'object-contain', 'flex', 'space-x-4', 'px-4', 'py-2', 'bg-orange-600', 'text-white', 'rounded-lg', 'hover:bg-orange-700', 'transition-colors', 'duration-200', 'flex', 'items-center', 'space-x-2', 'w-5', 'h-5', 'fixed', 'bottom-4', 'right-4', 'bg-green-500', 'text-white', 'px-6', 'py-3', 'rounded-lg', 'shadow-lg', 'flex', 'items-center', 'space-x-2', 'w-6', 'h-6', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'mt-auto',];
+    ['min-h-screen', 'bg-gray-50', 'flex', 'flex-col', 'items-center', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'flex', 'items-center', 'justify-between', 'flex', 'items-center', 'ml-8', 'h-8', 'w-8', 'text-white', 'mr-3', 'text-2xl', 'font-bold', 'text-white', 'flex', 'items-center', 'mr-8', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'ml-4', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'bg-orange-600', 'rounded-lg', 'hover:bg-orange-700', 'transition-all', 'duration-200', 'max-w-7xl', 'w-full', 'px-4', 'sm:px-6', 'lg:px-8', 'mx-auto', 'flex-grow', 'relative', '-mt-24', 'flex', 'flex-col', 'items-center', 'bg-white', 'rounded-xl', 'shadow-md', 'p-8', 'w-full', 'mt-12', 'flex', 'justify-center', 'items-center', 'h-64', 'bg-white', 'rounded-xl', 'shadow-md', 'p-8', 'w-full', 'mt-12', 'flex', 'justify-center', 'items-center', 'h-64', 'text-red-500', 'bg-white', 'rounded-xl', 'shadow-md', 'p-8', 'w-full', 'mt-12', 'flex', 'flex-col', 'items-center', 'mb-8', 'flex', 'flex-col', 'items-center', 'space-y-2', 'mb-8', 'w-48', 'h-48', 'bg-white', 'rounded-lg', 'shadow-md', 'p-3', 'cursor-pointer', 'hover:shadow-lg', 'transition-shadow', 'duration-200', 'w-full', 'h-full', 'object-contain', 'text-sm', 'text-gray-600', 'text-2xl', 'font-bold', 'text-gray-900', 'mb-6', 'grid', 'grid-cols-1', 'lg:grid-cols-3', 'gap-8', 'flex', 'flex-col', 'items-center', 'space-y-4', 'w-32', 'h-32', 'rounded-full', 'overflow-hidden', 'border-4', 'border-orange-100', 'w-full', 'h-full', 'object-cover', 'text-lg', 'font-semibold', 'text-gray-900', 'text-gray-600', 'lg:col-span-2', 'space-y-6', 'grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-6', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'block', 'text-sm', 'font-medium', 'text-gray-700', 'mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-orange-500', 'focus:ring-orange-500', 'flex', 'justify-end', 'space-x-4', 'pt-4', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'bg-orange-600', 'rounded-lg', 'hover:bg-orange-700', 'transition-all', 'duration-200', 'fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'flex', 'items-center', 'justify-center', 'z-50', 'p-4', 'bg-white', 'rounded-xl', 'p-6', 'max-w-lg', 'w-full', 'flex', 'flex-col', 'items-center', 'space-y-4', 'w-full', 'flex', 'justify-end', 'text-gray-500', 'hover:text-gray-700', 'w-6', 'h-6', 'w-64', 'h-64', 'bg-white', 'rounded-lg', 'shadow-md', 'p-2', 'w-full', 'h-full', 'object-contain', 'flex', 'space-x-4', 'px-4', 'py-2', 'bg-orange-600', 'text-white', 'rounded-lg', 'hover:bg-orange-700', 'transition-colors', 'duration-200', 'flex', 'items-center', 'space-x-2', 'w-5', 'h-5', 'fixed', 'bottom-4', 'right-4', 'bg-green-500', 'text-white', 'px-6', 'py-3', 'rounded-lg', 'shadow-lg', 'flex', 'items-center', 'space-x-2', 'w-6', 'h-6', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'mt-auto',];
     var __VLS_slots;
     var $slots;
     let __VLS_inheritedAttrs;

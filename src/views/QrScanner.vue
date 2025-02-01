@@ -34,6 +34,13 @@
         >
           History
         </router-link>
+        <router-link 
+          to="/about" 
+          class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/about' }"
+        >
+          Users
+        </router-link>
         <button 
           @click="logout" 
           class="ml-4 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all duration-200"
@@ -379,14 +386,11 @@ export default {
       this.errorTitle = '';
       this.errorMessage = '';
     },
-    async logout() {
-      try {
-        // Add your logout logic here
-        await this.$router.push('/login');
-      } catch (error) {
-        console.error('Logout error:', error);
-      }
-    }
+    logout() {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '/login'
+    },
   }
 }
 </script>

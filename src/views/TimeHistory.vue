@@ -24,15 +24,24 @@
       <nav class="flex items-center mr-8">
         <router-link 
           to="/scanner" 
-          class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
+          class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/scanner' }"
         >
           Dashboard
         </router-link>
         <router-link 
           to="/history" 
-          class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
+          class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/history' }"
         >
           History
+        </router-link>
+        <router-link 
+          to="/about" 
+          class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/about' }"
+        >
+          Users
         </router-link>
         <button 
           @click="logout" 

@@ -1,66 +1,132 @@
 <template>
-  <div class="container">
-    <h1 class="api-url">
-      Current API: http://localhost:8000/api/call/people
-    </h1>
-    <!-- Add debug info -->
-    <p>Number of people: {{ people.length }}</p>
-    <pre>{{ JSON.stringify(people, null, 2) }}</pre>
-    
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Gender</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>QR Code</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-if="people.length === 0">
-          <td colspan="6">Loading people...</td>
-        </tr>
-        <tr v-else v-for="person in people" :key="person.id" class="table-secondary">
-          <td scope="row" class="gender-cell">
-            <div class="gender-container">
-              <img 
-                :src="getGenderImage(person.gender)" 
-                :alt="person.gender"
-                class="gender-icon"
-              >
-              <span class="gender-text">{{ capitalizeFirstLetter(person.gender) }}</span>
-            </div>
-          </td>
-          <td scope="row">{{ person.firstname }}</td>
-          <td scope="row">{{ person.lastname }}</td>
-          <td scope="row">{{ person.email }}</td>
-          <td scope="row">{{ person.phone }}</td>
-          <td class="qr-cell">
-            <div class="qr-container" @click="showQRModal(person.qr_code)">
-              <qrcode-vue 
-                :value="person.qr_code" 
-                :size="100" 
-                level="H" 
-                render-as="canvas"
-              />
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="min-h-screen bg-gray-50 flex flex-col items-center">
+    <!-- Header Banner -->
+    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full flex items-center justify-between">
+      <!-- Left side: Logo and Title -->
+      <div class="flex items-center ml-8">
+        <svg 
+          class="h-8 w-8 text-white mr-3" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+          />
+        </svg>
+        <h1 class="text-2xl font-bold text-white">QR Scanner</h1>
+      </div>
 
-    <!-- Add Modal -->
-    <div v-if="showModal" class="modal-overlay" @click="showModal = false">
-      <div class="modal-content" @click.stop>
+      <!-- Right side: Navigation -->
+      <nav class="flex items-center mr-8">
+        <router-link 
+          to="/scanner" 
+          class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/scanner' }"
+        >
+          Dashboard
+        </router-link>
+        <router-link 
+          to="/history" 
+          class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/history' }"
+        >
+          History
+        </router-link>
+        <router-link 
+          to="/about" 
+          class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/about' }"
+        >
+          Users
+        </router-link>
+        <button 
+          @click="logout" 
+          class="ml-4 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all duration-200"
+        >
+          Logout
+        </button>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl w-full px-4 sm:px-6 lg:px-8 mx-auto flex-grow">
+      <div class="relative -mt-24 flex flex-col items-center">
+        <div class="bg-white rounded-xl shadow-md p-8 w-full mt-12">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b">
+                <th class="p-4 text-left bg-gray-50">Gender</th>
+                <th class="p-4 text-left bg-gray-50">First Name</th>
+                <th class="p-4 text-left bg-gray-50">Last Name</th>
+                <th class="p-4 text-left bg-gray-50">Email</th>
+                <th class="p-4 text-left bg-gray-50">Phone</th>
+                <th class="p-4 text-left bg-gray-50">QR Code</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="people.length === 0">
+                <td colspan="6" class="p-4 text-center">Loading people...</td>
+              </tr>
+              <tr 
+                v-else 
+                v-for="person in people" 
+                :key="person.id" 
+                class="border-b hover:bg-gray-50 cursor-pointer"
+                @click="openProfile(person.id, $event)"
+              >
+                <td class="p-4">
+                  <div class="flex flex-col items-center gap-2">
+                    <img 
+                      :src="getGenderImage(person.gender)" 
+                      :alt="person.gender"
+                      class="w-10 h-10 rounded-full"
+                    >
+                    <span class="text-sm text-gray-600">{{ capitalizeFirstLetter(person.gender) }}</span>
+                  </div>
+                </td>
+                <td class="p-4">{{ person.firstname }}</td>
+                <td class="p-4">{{ person.lastname }}</td>
+                <td class="p-4">{{ person.email }}</td>
+                <td class="p-4">{{ person.phone }}</td>
+                <td class="p-4">
+                  <div 
+                    class="flex justify-center cursor-pointer hover:scale-105 transition-transform" 
+                    @click.stop="showQRModal(person.qr_code)"
+                  >
+                    <qrcode-vue 
+                      :value="person.qr_code" 
+                      :size="100" 
+                      level="H" 
+                      render-as="canvas"
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Banner -->
+    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full mt-auto"></div>
+
+    <!-- Modal -->
+    <div v-if="showModal" 
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+         @click="showModal = false">
+      <div class="bg-white rounded-xl p-8 flex flex-col items-center gap-4" @click.stop>
         <qrcode-vue 
           :value="selectedQR" 
           :size="300" 
           level="H" 
           render-as="canvas"
         />
-        <small class="qr-string">{{ selectedQR }}</small>
+        <p class="text-sm text-gray-600 break-all max-w-md text-center">{{ selectedQR }}</p>
       </div>
     </div>
   </div>
@@ -93,6 +159,11 @@ export default {
     this.getPeople();
   },
   methods: {
+    logout() {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '/login'
+    },
     async getPeople() {
       try {
         console.log('Fetching people data...');
@@ -113,6 +184,13 @@ export default {
     capitalizeFirstLetter(string) {
       if (!string) return '';
       return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    },
+    openProfile(id, event) {
+      // Prevent opening profile if clicking on QR code
+      if (event.target.closest('.qr-code')) return;
+      
+      // Open profile in new tab
+      window.open(`/profile/${id}`, '_blank');
     }
   },
   async mounted() {
@@ -122,147 +200,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.qr-cell {
-  text-align: center;
-}
-
-.qr-container {
-  display: inline-block;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.qr-container:hover {
-  transform: scale(1.1);
-}
-
-.qr-string {
-  font-family: monospace;
-  font-size: 0.8rem;
-  color: #666;
-  word-break: break-all;
-  max-width: 150px;
-  text-align: center;
-}
-
-.no-qr {
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f3f4f6;
-  border-radius: 8px;
-  border: 2px dashed #d1d5db;
-}
-
-.no-qr span {
-  font-size: 0.8rem;
-  color: #6b7280;
-  text-align: center;
-  padding: 0.5rem;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-th, td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f8f9fa;
-  font-weight: bold;
-}
-
-.gender-cell {
-  text-align: center;
-}
-
-.gender-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-
-.gender-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.gender-text {
-  font-size: 0.9rem;
-  color: #4a5568;
-  font-weight: 500;
-}
-
-.api-url {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 10px;
-  }
-  
-  table {
-    font-size: 14px;
-  }
-  
-  th, td {
-    padding: 10px;
-  }
-  
-  .api-url {
-    font-size: 1rem;
-  }
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-</style>

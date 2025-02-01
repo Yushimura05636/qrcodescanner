@@ -42,7 +42,9 @@ export default (await import('vue')).defineComponent({
                 ]);
                 console.log('History data:', historyResponse.data);
                 console.log('People data:', peopleResponse.data);
-                this.history = historyResponse.data;
+                this.history = historyResponse.data.sort((a, b) => {
+                    return new Date(b.created_at) - new Date(a.created_at);
+                });
                 this.people = peopleResponse.data;
             }
             catch (error) {
