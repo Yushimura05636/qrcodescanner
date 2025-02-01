@@ -24,6 +24,11 @@ const routes = [
         path: '/history',
         name: 'history',
         component: () => import('../views/TimeHistory.vue')
+    },
+    {
+        path: '/profile',
+        name: 'profile',
+        component: () => import('../views/ProfileView.vue')
     }
 ];
 const router = createRouter({
