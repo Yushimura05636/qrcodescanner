@@ -160,7 +160,7 @@ export default {
         if (response.data) {
           this.showSuccess = true;
           console.log(response.data.token);
-          this.$router.push('/profile');
+          this.$router.push('/scanner');
         }
       } catch (error) {
         console.error('Login error:', error);
