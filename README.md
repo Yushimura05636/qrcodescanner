@@ -71,3 +71,4 @@ pnpm lint
 # qrcodescanner
 # qrcodescanner
 # qrscannerdb
+# qrcodescanner
