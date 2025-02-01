@@ -106,21 +106,26 @@ export default (await import('vue')).defineComponent({
         async updateProfile() {
             try {
                 this.loading = true;
-                const response = await axios.put(`https://qrscannerdb-production.up.railway.app/api/call/people/${this.person.id}`, this.person);
-                this.person = response.data;
-                this.originalPerson = { ...response.data };
-                this.isEditing = false;
-                // Show success popup
-                this.showSuccess = true;
-                setTimeout(() => {
-                    this.showSuccess = false;
-                    // Refresh the page
-                    window.location.href = '/history';
-                }, 2000);
+                const response = await fetch('/api/profile/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(this.person)
+                });
+                if (response.ok) {
+                    this.showSuccess = true;
+                    setTimeout(() => {
+                        this.$router.push('/history'); // Changed from '/history'
+                    }, 1500);
+                }
+                else {
+                    throw new Error('Failed to update profile');
+                }
             }
             catch (error) {
                 console.error('Error updating profile:', error);
-                alert('Failed to update profile. Please try again.');
             }
             finally {
                 this.loading = false;

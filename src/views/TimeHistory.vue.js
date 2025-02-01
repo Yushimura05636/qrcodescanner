@@ -8,7 +8,8 @@ export default (await import('vue')).defineComponent({
             loading: true,
             error: null,
             maleImage: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/male/45.png',
-            femaleImage: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/45.png'
+            femaleImage: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/45.png',
+            showSuccess: false
         };
     },
     computed: {
@@ -76,6 +77,12 @@ export default (await import('vue')).defineComponent({
         },
         editRecord(record) {
             console.log('Editing record:', record);
+        },
+        showSuccessToast() {
+            this.showSuccess = true;
+            setTimeout(() => {
+                this.showSuccess = false;
+            }, 2000); // Hide after 2 seconds to match login/register
         }
     }
 }); /* PartiallyEnd: #3632/script.vue */
@@ -236,7 +243,25 @@ function __VLS_template() {
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
         ...{ class: ("h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full mt-auto") },
     });
-    ['min-h-screen', 'bg-gray-50', 'flex', 'flex-col', 'items-center', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'flex', 'items-center', 'justify-between', 'flex', 'items-center', 'ml-8', 'h-8', 'w-8', 'text-white', 'mr-3', 'text-2xl', 'font-bold', 'text-white', 'flex', 'items-center', 'mr-8', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'ml-4', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'bg-orange-600', 'rounded-lg', 'hover:bg-orange-700', 'transition-all', 'duration-200', 'max-w-7xl', 'w-full', 'px-4', 'sm:px-6', 'lg:px-8', 'mx-auto', 'flex-grow', 'relative', '-mt-24', 'flex', 'flex-col', 'items-center', 'bg-white', 'rounded-xl', 'shadow-md', 'p-8', 'w-full', 'mt-12', 'table-container', 'history-table', 'loading-message', 'no-records', 'time-in', 'time-out', 'flex', 'items-center', 'space-x-3', 'w-8', 'h-8', 'rounded-full', 'px-3', 'edit-button', 'button-text', 'icon', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'mt-auto',];
+    if (__VLS_ctx.showSuccess) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+            ...{ class: ("fixed top-4 right-4 bg-orange-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2 transition-all duration-500 ease-in-out") },
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.svg, __VLS_intrinsicElements.svg)({
+            ...{ class: ("w-6 h-6") },
+            fill: ("none"),
+            stroke: ("currentColor"),
+            viewBox: ("0 0 24 24"),
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.path)({
+            'stroke-linecap': ("round"),
+            'stroke-linejoin': ("round"),
+            'stroke-width': ("2"),
+            d: ("M5 13l4 4L19 7"),
+        });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.span, __VLS_intrinsicElements.span)({});
+    }
+    ['min-h-screen', 'bg-gray-50', 'flex', 'flex-col', 'items-center', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'flex', 'items-center', 'justify-between', 'flex', 'items-center', 'ml-8', 'h-8', 'w-8', 'text-white', 'mr-3', 'text-2xl', 'font-bold', 'text-white', 'flex', 'items-center', 'mr-8', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'nav-link', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'hover:text-orange-100', 'transition-all', 'duration-200', 'ml-4', 'px-4', 'py-2', 'text-sm', 'font-medium', 'text-white', 'bg-orange-600', 'rounded-lg', 'hover:bg-orange-700', 'transition-all', 'duration-200', 'max-w-7xl', 'w-full', 'px-4', 'sm:px-6', 'lg:px-8', 'mx-auto', 'flex-grow', 'relative', '-mt-24', 'flex', 'flex-col', 'items-center', 'bg-white', 'rounded-xl', 'shadow-md', 'p-8', 'w-full', 'mt-12', 'table-container', 'history-table', 'loading-message', 'no-records', 'time-in', 'time-out', 'flex', 'items-center', 'space-x-3', 'w-8', 'h-8', 'rounded-full', 'px-3', 'edit-button', 'button-text', 'icon', 'h-30', 'bg-gradient-to-r', 'from-orange-500', 'to-orange-600', 'w-full', 'mt-auto', 'fixed', 'top-4', 'right-4', 'bg-orange-600', 'text-white', 'px-6', 'py-3', 'rounded-lg', 'shadow-lg', 'flex', 'items-center', 'space-x-2', 'transition-all', 'duration-500', 'ease-in-out', 'w-6', 'h-6',];
     var __VLS_slots;
     var $slots;
     let __VLS_inheritedAttrs;
