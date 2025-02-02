@@ -127,14 +127,14 @@
               <!-- Enlarged QR Code Modal -->
               <div 
                 v-if="showEnlargedQR" 
-                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
                 @click="showEnlargedQR = false"
               >
                 <div 
-                  class="bg-white p-8 rounded-lg shadow-xl max-w-xl mx-4"
+                  class="bg-white p-4 md:p-8 rounded-lg shadow-xl w-full max-w-sm md:max-w-xl mx-auto"
                   @click.stop
                 >
-                  <div class="flex justify-end mb-4">
+                  <div class="flex justify-end mb-2">
                     <button 
                       @click="showEnlargedQR = false"
                       class="text-gray-500 hover:text-gray-700"
@@ -144,12 +144,15 @@
                       </svg>
                     </button>
                   </div>
-                  <qrcode-vue 
-                    :value="qrCodeUrl" 
-                    :size="400" 
-                    level="H"
-                    render-as="svg"
-                  />
+                  <div class="flex justify-center items-center">
+                    <qrcode-vue 
+                      :value="qrCodeUrl" 
+                      :size="window.innerWidth < 768 ? Math.min(window.innerWidth - 80, 300) : 400" 
+                      level="H"
+                      render-as="svg"
+                      class="w-full h-full"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -747,7 +750,13 @@ th.cursor-pointer:hover {
   .fixed > div {
     margin: 1rem;
     max-height: calc(100vh - 2rem);
-    overflow-y: auto;
+    width: calc(100vw - 2rem);
+    overflow: hidden;
+  }
+  
+  .fixed svg {
+    max-width: 100%;
+    height: auto;
   }
 }
 
