@@ -146,6 +146,8 @@
 <script>
 import axios from 'axios';
 import QrcodeVue from 'qrcode.vue';
+import { config } from '../router';
+const API_URL = config.API_URL;
 
 export default {
   name: 'AboutView',
@@ -184,7 +186,7 @@ export default {
     async getPeople() {
       try {
         console.log('Fetching people data...');
-        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
+        const response = await axios.get(`${API_URL}/call/people`);
         console.log('People data received:', response.data);
         this.people = response.data;
       } catch (error) {

@@ -134,6 +134,8 @@
 
 <script>
 import axios from 'axios';
+import { config } from '../router';
+const API_URL = config.API_URL;
 
 export default {
   name: 'TimeHistory',
@@ -200,8 +202,8 @@ export default {
         this.loading = true;
         // Fetch both history and people data
         const [historyResponse, peopleResponse] = await Promise.all([
-          axios.get('https://qrscannerdb-production.up.railway.app/api/call/history'),
-          axios.get('https://qrscannerdb-production.up.railway.app/api/call/people')
+          axios.get(`${API_URL}/call/history`),
+          axios.get(`${API_URL}/call/people`)
         ]);
 
         console.log('History data:', historyResponse.data);

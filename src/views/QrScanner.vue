@@ -328,6 +328,46 @@
         <p class="text-gray-600 mt-2">{{ errorMessage }}</p>
       </div>
     </div>
+
+    <!-- Success Modal -->
+    <div v-if="showSuccessModal" class="fixed inset-0 flex items-center justify-center z-50">
+      <div class="absolute inset-0 bg-black/60"></div>
+      <div class="bg-white rounded-xl p-8 shadow-xl relative z-10 max-w-sm w-full mx-4 transform animate-modal">
+        <div class="text-center">
+          <!-- Animated Success Icon -->
+          <div class="flex">
+            <div class="flex-auto"></div>
+            <div class="mx-auto w-24 h-24 rounded-full bg-green-100 mb-6 flex items-center justify-center">
+              <svg 
+                class="h-14 w-14 text-green-600 check-animation" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="3" 
+                  d="M5 13l4 4L19 7"
+                  class="draw-check"
+                />
+              </svg>
+            </div>
+            <div class="flex-auto"></div>
+          </div>
+          <h3 class="text-xl font-medium text-gray-900 mb-2">{{ successMessage }}</h3>
+          <p class="text-sm text-gray-500 mb-6">
+            {{ timeMessage }}
+          </p>
+          <button 
+            @click="closeSuccessModal" 
+            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-all duration-200 font-medium"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -335,6 +375,8 @@
 import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import axios from 'axios';
 import QrcodeVue from 'qrcode.vue'
+import { config } from '../router';
+const API_URL = config.API_URL;
 
 export default {
   name: 'QrScanner',
@@ -358,7 +400,9 @@ export default {
       totalScans: 0,
       totalRegistered: 0,
       totalTimeIn: 0,
-      totalTimeOut: 0
+      totalTimeOut: 0,
+      showSuccessModal: false,
+      timeMessage: '',
     }
   },
   async created() {
@@ -412,7 +456,7 @@ export default {
       this.scannedResult = decodedText;
       
       try {
-        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/people');
+        const response = await axios.get(`${API_URL}/call/people`);
         console.log('API Response:', response.data);
         
         // Log all QR codes from the response
@@ -449,14 +493,6 @@ export default {
     onScanError(error) {
       console.warn('QR Scan error:', error);
     },
-    async handleTimeIn() {
-      await this.handleTimeRecord('Time In');
-      window.location.reload();
-    },
-    async handleTimeOut() {
-      await this.handleTimeRecord('Time Out');
-      window.location.reload();
-    },
     async handleTimeRecord(description) {
       try {
         this.loading = true;
@@ -466,17 +502,18 @@ export default {
           person_id: this.userData.id
         };
 
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/call/history', timeRecord);
+        const response = await axios.post(`${API_URL}/call/history`, timeRecord);
         
         if (response.data) {
-          this.successTitle = `${description} Successful`;
-          this.successMessage = `Time recorded for ${this.userData.firstname}`;
-          this.showSuccess = true;
-          this.userData = null;
+          // Show success modal
+          this.showSuccessModal = true;
+          this.successMessage = `${description} Successful!`;
+          this.timeMessage = `Time recorded: ${new Date().toLocaleTimeString()}`;
           
+          // Wait 3 seconds before reloading
           setTimeout(() => {
-            this.closeSuccess();
-          }, 2000);
+            window.location.reload();
+          }, 3000);
         }
       } catch (error) {
         console.error('Time record error:', error);
@@ -490,6 +527,14 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    async handleTimeIn() {
+      await this.handleTimeRecord('Time In');
+      // Removed immediate reload
+    },
+    async handleTimeOut() {
+      await this.handleTimeRecord('Time Out');
+      // Removed immediate reload
     },
     formatDateTime(date) {
       const d = new Date(date);
@@ -533,7 +578,7 @@ export default {
     },
     async fetchStats() {
       try {
-        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/history/scan/0');
+        const response = await axios.get(`${API_URL}/call/history/scan/0`);
         const history = response.data;
         
         this.totalScans = history.length;
@@ -563,7 +608,47 @@ export default {
       this.userData = null;
       this.error = null;
       this.scannedResult = null;
-    }
+    },
+    async onDecode(decodedString) {
+      try {
+        const response = await fetch(`${API_URL}/scan`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            qr_code: decodedString
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Show success modal with appropriate message
+          this.showSuccessModal = true;
+          this.successMessage = data.type === 'time_in' ? 'Time In Successful!' : 'Time Out Successful!';
+          this.timeMessage = `${data.type === 'time_in' ? 'Time In' : 'Time Out'}: ${new Date().toLocaleTimeString()}`;
+          
+          // Automatically close modal after 3 seconds
+          setTimeout(() => {
+            this.closeSuccessModal();
+          }, 3000);
+        } else {
+          throw new Error(data.message || 'Scanning failed');
+        }
+      } catch (error) {
+        console.error('Scanning error:', error);
+        // Handle error (you might want to show an error modal here)
+      }
+    },
+    closeSuccessModal() {
+      this.showSuccessModal = false;
+      this.successMessage = '';
+      this.timeMessage = '';
+      // Resume scanning after closing modal
+      this.$refs.scanner.startScanning();
+    },
   },
   watch: {
     showScanner(newVal) {
@@ -919,5 +1004,127 @@ export default {
 .router-link-active {
   font-weight: 500;
   color: rgb(255, 237, 213);
+}
+
+/* Add these styles for modal animation */
+.fixed {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: #2d3748;
+  }
+  
+  .text-gray-900 {
+    color: #fff;
+  }
+  
+  .text-gray-500 {
+    color: #a0aec0;
+  }
+  
+  .bg-green-100 {
+    background-color: rgba(74, 222, 128, 0.2);
+  }
+}
+
+@keyframes modalFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-modal {
+  animation: modalFade 0.3s ease-out forwards;
+}
+
+.animate-check {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: checkmark 0.8s ease-out forwards;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: #1f2937;
+  }
+  
+  .text-gray-900 {
+    color: #f3f4f6;
+  }
+  
+  .text-gray-500 {
+    color: #9ca3af;
+  }
+  
+  .bg-green-100 {
+    background-color: rgba(74, 222, 128, 0.2);
+  }
+  
+  .text-green-600 {
+    color: #34d399;
+  }
+}
+
+/* New checkmark animation styles */
+.check-animation {
+  opacity: 0;
+  animation: scaleIn 0.3s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+.draw-check {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawCheck 0.6s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes drawCheck {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 </style>

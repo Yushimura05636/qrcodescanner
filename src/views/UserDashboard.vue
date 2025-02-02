@@ -131,6 +131,15 @@
                 <p class="text-sm text-gray-600">
                   <span class="font-medium">Email:</span> {{ userEmail }}
                 </p>
+                <p class="text-sm text-gray-600">
+                  <span class="font-medium">Qr code:</span> {{ qrCodeUrl }}
+                </p>
+                <p class="text-sm text-gray-600">
+                  <span class="font-medium">Student Id:</span> {{ userId }}
+                </p>
+                <p class="text-sm text-gray-600">
+                  <span class="font-medium">Address:</span> {{ userAddress }}
+                </p>
               </div>
             </div>
           </div>
@@ -144,8 +153,18 @@
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 sticky top-0 z-10">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Date & Time</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Description</th>
+                    <th 
+                      @click="sortBy('date')" 
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 cursor-pointer hover:bg-gray-100"
+                    >
+                      Date & Time {{ getSortIcon('date') }}
+                    </th>
+                    <th 
+                      @click="sortBy('description')" 
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 cursor-pointer hover:bg-gray-100"
+                    >
+                      Description {{ getSortIcon('description') }}
+                    </th>
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -154,7 +173,7 @@
                       No scan history available
                     </td>
                   </tr>
-                  <tr v-for="(scan, index) in scans" :key="index" class="h-[60px]">
+                  <tr v-for="(scan, index) in sortedScans" :key="index" class="h-[60px]">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {{ formatDateTime(scan.date) }}
                     </td>
@@ -185,6 +204,8 @@
 <script>
 import QrcodeVue from 'qrcode.vue';
 import axios from 'axios';
+import { config } from '../router'; 
+const API_URL = config.API_URL;
 
 export default {
   name: 'UserDashboard',
@@ -197,13 +218,37 @@ export default {
       userEmail: '',
       userParamsEmail: this.$route.query.email,
       userId: this.$route.params.id,
+      userAddress: '',
       userParamsToken: this.$route.query.token,
       isAuthorized: false,
       qrCodeUrl: '',
       scans: [],
       loading: true,
       error: null,
-      showEnlargedQR: false
+      showEnlargedQR: false,
+      sortKey: 'date',
+      sortOrder: 'desc' // Default to descending (latest first)
+    }
+  },
+  computed: {
+    sortedScans() {
+      return [...this.scans].sort((a, b) => {
+        let aValue = a[this.sortKey];
+        let bValue = b[this.sortKey];
+
+        // Convert dates for comparison if sorting by date
+        if (this.sortKey === 'date') {
+          aValue = new Date(aValue);
+          bValue = new Date(bValue);
+        }
+
+        // For descending order
+        if (this.sortOrder === 'desc') {
+          return aValue > bValue ? -1 : 1;
+        }
+        // For ascending order
+        return aValue < bValue ? -1 : 1;
+      });
     }
   },
   async created() {
@@ -219,7 +264,7 @@ export default {
   methods: {
     async validateUser() {
       try {
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/user_validation', {
+        const response = await axios.post(`${API_URL}/user_validation`, {
           id: this.userId,
           email: this.userParamsEmail,
           token: this.userParamsToken
@@ -242,7 +287,7 @@ export default {
     },
     async fetchUserData() {
       try {
-        const response = await axios.get(`https://qrscannerdb-production.up.railway.app/api/call/people/${this.userId}`);
+        const response = await axios.get(`${API_URL}/call/people/${this.userId}`);
         const userData = response.data;
 
         console.log('userData:',response.data);
@@ -250,6 +295,7 @@ export default {
         this.userName = userData.firstname + ' ' + userData.lastname;
         this.userEmail = userData.email;
         this.qrCodeUrl = userData.qr_code;
+        this.userAddress = userData.address;
       } catch (error) {
         console.error('Error fetching user data:', error);
         throw new Error('Failed to fetch user data');
@@ -269,8 +315,7 @@ export default {
     },
     async fetchScanHistory() {
       try {
-        const response = await axios.get(`https://qrscannerdb-production.up.railway.app/api/call/history/${this.userId}`);
-        console.log('Response data:', response.data); // Debug log
+        const response = await axios.get(`${API_URL}/call/history/${this.userId}`);
         
         // Convert to array if it's a single object
         const allScans = Array.isArray(response.data) ? response.data : [response.data];
@@ -285,7 +330,8 @@ export default {
           }
         }
         
-        this.scans = filteredScans;
+        // Sort by date in descending order by default
+        this.scans = filteredScans.sort((a, b) => new Date(b.date) - new Date(a.date));
 
       } catch (error) {
         console.error('Error fetching scan history:', error);
@@ -296,6 +342,19 @@ export default {
     logout() {
       localStorage.removeItem('userToken');
       this.$router.push('/user_login');
+    },
+    sortBy(key) {
+      // If clicking the same key, reverse the order
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'desc'; // Default to descending when changing sort key
+      }
+    },
+    getSortIcon(key) {
+      if (this.sortKey !== key) return '↕️';
+      return this.sortOrder === 'asc' ? '↑' : '↓';
     }
   }
 }
@@ -342,6 +401,32 @@ export default {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Add styles for sortable columns */
+th.cursor-pointer {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+th.cursor-pointer:hover {
+  background-color: #f3f4f6;
+}
+
+@media (max-width: 768px) {
+  th.cursor-pointer:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  th, td {
+    font-size: 0.75rem;
   }
 }
 </style>

@@ -141,6 +141,15 @@
                   </div>
 
                   <div>
+                    <label class="block text-sm font-medium text-gray-700">Address</label>
+                    <input 
+                      type="text" 
+                      v-model="person.address" 
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                    >
+                  </div>
+
+                  <div>
                     <label class="block text-sm font-medium text-gray-700">Gender</label>
                     <select 
                       v-model="person.gender"
@@ -151,6 +160,7 @@
                     </select>
                   </div>
                 </div>
+
 
                 <div class="flex justify-end space-x-4 pt-4">
                   <button 
@@ -227,6 +237,8 @@
 <script>
 import axios from 'axios';
 import QrcodeVue from 'qrcode.vue';
+import { config } from '../router';
+const API_URL = config.API_URL;
 
 export default {
   name: 'ProfileView',
@@ -282,7 +294,7 @@ export default {
   methods: {
     async fetchProfile(id) {
       try {
-        const response = await axios.get(`https://qrscannerdb-production.up.railway.app/api/call/people/${id}`);
+        const response = await axios.get(`${API_URL}/call/people/${id}`);
         if (response.data) {
           this.person = response.data;
           this.originalPerson = { ...response.data };
@@ -306,7 +318,7 @@ export default {
       try {
         this.saving = true;
         const response = await axios.put(
-          `https://qrscannerdb-production.up.railway.app/api/call/people/${this.person.id}`,
+          `${API_URL}/call/people/${this.person.id}`,
           this.person
         );
         this.person = response.data;
@@ -375,7 +387,7 @@ export default {
     async updateProfile() {
       try {
         this.loading = true
-        const response = await fetch(`https://qrscannerdb-production.up.railway.app/api/call/people/${this.person.id}`, {
+        const response = await fetch(`${API_URL}/call/people/${this.person.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

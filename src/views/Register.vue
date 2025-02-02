@@ -49,17 +49,17 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-grow w-full flex items-start justify-between px-20 pl-50 pt-8 relative" style="z-index: 1;">
+    <div class="flex-grow w-full flex items-start justify-between px-4 sm:px-20 pt-8 relative flex-col md:flex-row gap-8 md:gap-0" style="z-index: 1;">
       <!-- Form Section (Left) -->
-      <div class="bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md relative">
+      <div class="bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md relative mx-auto md:mx-0">
         <!-- Form Background Pattern -->
         <div class="absolute inset-0 opacity-5">
           <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'6\' height=\'6\' viewBox=\'0 0 6 6\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M5 0h1L0 6V5zM6 5v1H5z\'/%3E%3C/g%3E%3C/svg%3E')"></div>
         </div>
         
         <!-- Form Content -->
-        <div class="p-8 relative">
-          <h2 class="text-xl font-bold text-gray-900 mb-8">Create Account</h2>
+        <div class="p-4 sm:p-8 relative">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 sm:mb-8">Create Account</h2>
           
           <form class="space-y-5" @submit.prevent="handleRegister">
             <!-- First Name -->
@@ -108,6 +108,19 @@
                   required
                 >
               </div>
+
+              <!-- Address -->
+              <div class="mb-4 pb-3">
+                <input 
+                  type="text" 
+                  id="address"
+                  v-model="address"
+                  class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Address"
+                  required
+                >
+              </div>
+
               <!-- Gender -->
               <div class="mb-4 pb-3">
                 <select 
@@ -158,30 +171,24 @@
 
             <!-- Success Popup Modal -->
             <div v-if="qrString" class="fixed inset-0 flex items-center justify-center z-50">
-              <div class="absolute inset-0 bg-black opacity-50"></div>
-              <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
+              <div class="absolute inset-0 bg-black/60"></div>
+              <div class="bg-white rounded-xl p-8 shadow-xl relative z-10 max-w-sm w-full mx-4 transform animate-modal">
                 <div class="text-center">
-                  <!-- Logo -->
-                  <div class="flex flex-col items-center justify-center mb-6">
-                    <div class="h-20 w-20 rounded-full bg-orange-100 flex items-center justify-center mb-2">
-                      <svg 
-                        class="h-12 w-12 text-orange-600" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                      >
-                        <path 
-                          stroke-linecap="round" 
-                          stroke-linejoin="round" 
-                          stroke-width="2" 
-                          d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
-                        />
-                      </svg>
+                  <!-- Logo Image -->
+                  <div class="flex">
+                    <div class="flex-auto"></div>
+                    <div class="mx-auto w-24 h-24 rounded-full bg-orange-100 mb-6 flex items-center justify-center overflow-hidden">
+                      <img 
+                        src="../assets/img/Logo.png" 
+                        alt="Success Logo" 
+                        class="w-16 h-16 object-contain animate-logo"
+                      />
                     </div>
+                    <div class="flex-auto"></div>
                   </div>
 
                   <!-- Success Message -->
-                  <h3 class="text-lg font-medium text-gray-900 mb-2">Registration Successful!</h3>
+                  <h3 class="text-xl font-medium text-gray-900 mb-2">Registration Successful!</h3>
                   <p class="text-sm text-gray-500 mb-4">Your QR Code has been generated:</p>
                   <div class="bg-gray-50 p-3 rounded-lg mb-6">
                     <p class="text-xs font-mono text-gray-600">{{ qrString }}</p>
@@ -190,7 +197,7 @@
                   <!-- Login Button -->
                   <router-link 
                     to="/user_login"
-                    class="w-full inline-block bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-200 text-sm font-medium"
+                    class="w-full inline-block bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm font-medium"
                   >
                     Login to Your Account
                   </router-link>
@@ -210,7 +217,7 @@
       </div>
 
       <!-- Phone Image Section (Right) -->
-      <div class="w-full max-w-lg ml-8 rounded-2xl overflow-hidden">
+      <div class="w-full max-w-lg ml-0 md:ml-8 rounded-2xl overflow-hidden hidden md:block">
         <div class="relative h-full min-h-[600px] flex items-center justify-center">
           <!-- Phone Image -->
           <img 
@@ -229,6 +236,8 @@
 
 <script>
 import axios from 'axios';
+import { config } from '../router';
+const API_URL = config.API_URL;
 
 export default {
   name: 'Register',
@@ -241,6 +250,7 @@ export default {
       confirmPassword: '',
       phone: '',
       gender: '',
+      address: '',
       qrString: null
     }
   },
@@ -258,16 +268,22 @@ export default {
         alert('Passwords do not match');
         return;
       }
+
+      console.log('Registering:',this.firstname, this.lastname, this.email, this.password, this.phone, this.gender, this.address);
+
       try {
-        const response = await axios.post('https://qrscannerdb-production.up.railway.app/api/user_register', {
+        const response = await axios.post(`${API_URL}/user_register`, {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,
           password: this.password,
           phone: this.phone,
           gender: this.gender || 'male',
+          address: this.address,
           qr_code: this.generateQRString()
         });
+
+        console.log(response.data);
         
         console.log('Registration response:', response.data);
         this.qrString = this.generateQRString();
@@ -396,6 +412,126 @@ input, select, button {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .h-30 {
+    height: 5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .ml-8 {
+    margin-left: 1rem;
+  }
+
+  .mr-8 {
+    margin-right: 1rem;
+  }
+
+  nav a {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .bg-white {
+    margin: 0 1rem;
+  }
+
+  form {
+    padding: 1rem 0;
+  }
+
+  input, select {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  button[type="submit"] {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .space-y-5 > * {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 0.75rem;
+  }
+
+  .pb-3 {
+    padding-bottom: 0.75rem;
+  }
+
+  /* Adjust modal for mobile */
+  .fixed .bg-white {
+    margin: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+@keyframes modalFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-modal {
+  animation: modalFade 0.3s ease-out forwards;
+}
+
+@keyframes logoAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-20deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+.animate-logo {
+  opacity: 0;
+  animation: logoAppear 0.6s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: #1f2937;
+  }
+  
+  .text-gray-900 {
+    color: #f3f4f6;
+  }
+  
+  .text-gray-500, .text-gray-600 {
+    color: #9ca3af;
+  }
+  
+  .bg-orange-100 {
+    background-color: rgba(251, 146, 60, 0.2);
+  }
+  
+  .bg-gray-50 {
+    background-color: #374151;
   }
 }
 </style>

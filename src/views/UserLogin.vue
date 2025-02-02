@@ -32,9 +32,9 @@
       <!-- Right side: Navigation -->
       <nav class="flex items-center mr-8">
         <router-link 
-          to="/user-login" 
+          to="/user_login" 
           class="px-3 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
-          :class="{ 'opacity-75 font-semibold': $route.path === '/user-login' }"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/user_login' }"
         >
           User Login
         </router-link>
@@ -42,11 +42,11 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-grow w-full flex items-start justify-between px-20 pt-8 relative" style="z-index: 1;">
+    <div class="flex-grow w-full flex items-start justify-between px-4 sm:px-20 pt-8 relative flex-col md:flex-row gap-8 md:gap-0" style="z-index: 1;">
       <!-- Form Section (Left) -->
-      <div class="bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md relative">
-        <div class="p-8 relative">
-          <h2 class="text-xl font-bold text-gray-900 mb-8">Login as User</h2>
+      <div class="bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md relative mx-auto md:mx-0">
+        <div class="p-4 sm:p-8 relative">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 sm:mb-8">Login as User</h2>
           
           <form class="space-y-4" @submit.prevent="handleLogin">
             <!-- Email -->
@@ -76,7 +76,7 @@
             <!-- Forgot Password Link -->
             <div class="flex items-center justify-end mb-2">
               <a 
-                href="#" 
+                href="/forgot_password" 
                 class="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
               >
                 Forgot Password?
@@ -116,7 +116,7 @@
       </div>
 
       <!-- Phone Image Section (Right) -->
-      <div class="w-full max-w-lg ml-8 rounded-2xl overflow-hidden">
+      <div class="w-full max-w-lg ml-0 md:ml-8 rounded-2xl overflow-hidden hidden md:block">
         <div class="relative h-full min-h-[600px] flex items-center justify-center">
           <img 
             src="../assets/img/Phone.png" 
@@ -135,10 +135,14 @@
       <div class="absolute inset-0 bg-black opacity-50"></div>
       <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
         <div class="text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+          <div class="flex items-center justify-center">
+            <div class="flex-auto"></div>
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
             <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
+              </svg>
+            </div>
+            <div class="flex-auto"></div>
           </div>
           <h3 class="text-lg font-medium text-gray-900 mb-2">Login Successful!</h3>
           <p class="text-sm text-gray-500 mb-4">You will be redirected to the dashboard shortly.</p>
@@ -151,10 +155,14 @@
       <div class="absolute inset-0 bg-black opacity-50"></div>
       <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
         <div class="text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+          <div class="flex items-center justify-center">
+            <div class="flex-auto"></div>
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
             <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+              </svg>
+            </div>
+            <div class="flex-auto"></div>
           </div>
           <h3 class="text-lg font-medium text-gray-900 mb-2">Login Failed</h3>
           <p class="text-sm text-gray-500 mb-4">{{ errorMessage }}</p>
@@ -171,6 +179,9 @@
 </template>
 
 <script>
+import { config } from '../router';
+const API_URL = config.API_URL;
+
 export default {
   name: 'UserLogin',
   data() {
@@ -191,7 +202,7 @@ export default {
         this.errorMessage = '';
 
         // Your login API call here
-        const response = await fetch('https://qrscannerdb-production.up.railway.app/api/user_login', {
+        const response = await fetch(`${API_URL}/user_login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -244,7 +255,54 @@ export default {
   height: 7.5rem;
 }
 
-/* Optional: Add fade animation for popups */
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .h-30 {
+    height: 5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .ml-8 {
+    margin-left: 1rem;
+  }
+
+  .mr-8 {
+    margin-right: 1rem;
+  }
+
+  nav a {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .bg-white {
+    margin: 0 1rem;
+  }
+
+  form {
+    padding: 1rem 0;
+  }
+
+  input {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  button[type="submit"] {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .space-y-4 > * {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Existing animation styles */
 .fixed {
   animation: fadeIn 0.3s ease-out;
 }

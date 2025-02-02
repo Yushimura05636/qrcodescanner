@@ -56,6 +56,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'user_dashboard',
     component: () => import('../views/UserDashboard.vue'),
     props: true
+  },
+  {
+    path: '/forgot_password',
+    name: 'forgot_password',
+    component: () => import('../views/ForgotPassword.vue')
   }
 ]
 
@@ -65,3 +70,7 @@ const router = createRouter({
 })
 
 export default router
+
+export const config = {
+  API_URL: 'http://localhost:8000/api'
+}
