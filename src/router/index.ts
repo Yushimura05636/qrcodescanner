@@ -72,5 +72,6 @@ const router = createRouter({
 export default router
 
 export const config = {
-  API_URL: 'http://localhost:8000/api'
+  //API_URL: 'http://localhost:8000/api'
+  API_URL: 'https://qrscannerdb-production.up.railway.app/api'
 }
