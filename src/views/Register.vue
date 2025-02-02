@@ -68,7 +68,7 @@
                 type="text" 
                 id="firstname"
                 v-model="firstname"
-                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="First Name"
                 required
               >
@@ -80,7 +80,7 @@
                 type="text" 
                 id="lastname"
                 v-model="lastname"
-                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="Last Name"
                 required
               >
@@ -92,7 +92,7 @@
                 type="email" 
                 id="email"
                 v-model="email"
-                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="Email"
                 required
                 >
@@ -103,7 +103,7 @@
                   type="tel" 
                   id="phone"
                   v-model="phone"
-                  class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                   placeholder="Phone Number"
                   required
                 >
@@ -115,7 +115,7 @@
                   type="text" 
                   id="address"
                   v-model="address"
-                  class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                   placeholder="Address"
                   required
                 >
@@ -126,7 +126,7 @@
                 <select 
                   id="gender"
                   v-model="gender"
-                  class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white"
+                  class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 bg-white"
                   required
                 >
                   <option value="">Select Gender</option>
@@ -141,7 +141,7 @@
                 type="password" 
                 id="password"
                 v-model="password"
-                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="Password"
                 required
               >
@@ -153,7 +153,7 @@
                 type="password" 
                 id="confirmPassword"
                 v-model="confirmPassword"
-                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="Confirm Password"
                 required
               >
@@ -532,6 +532,36 @@ input, select, button {
   
   .bg-gray-50 {
     background-color: #374151;
+  }
+}
+
+/* Input styling */
+input, select {
+  background-color: #f8fafc;
+}
+
+input:focus, select:focus {
+  background-color: white;
+}
+
+/* Dark mode support for inputs */
+@media (prefers-color-scheme: dark) {
+  input, select {
+    background-color: #1e293b;
+    color: #e2e8f0;
+  }
+  
+  input::placeholder {
+    color: #64748b;
+  }
+  
+  input:focus, select:focus {
+    background-color: #0f172a;
+  }
+  
+  select option {
+    background-color: #1e293b;
+    color: #e2e8f0;
   }
 }
 </style>

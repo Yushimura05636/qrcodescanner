@@ -104,63 +104,67 @@
             <div class="lg:col-span-2">
               <form @submit.prevent="updateProfile" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
+                  <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">First Name</label>
                     <input 
                       type="text" 
-                      v-model="person.firstname" 
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      v-model="person.firstname"
+                      class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 placeholder-orange-300"
+                      placeholder="Enter your first name"
                     >
                   </div>
 
-                  <div>
+                  <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Last Name</label>
                     <input 
                       type="text" 
-                      v-model="person.lastname" 
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      v-model="person.lastname"
+                      class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 placeholder-orange-300"
+                      placeholder="Enter your last name"
                     >
                   </div>
 
-                  <div>
+                  <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Email</label>
                     <input 
                       type="email" 
-                      v-model="person.email" 
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      v-model="person.email"
+                      class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 placeholder-orange-300"
+                      placeholder="Enter your email"
                     >
                   </div>
 
-                  <div>
+                  <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Phone</label>
                     <input 
                       type="tel" 
-                      v-model="person.phone" 
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      v-model="person.phone"
+                      class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 placeholder-orange-300"
+                      placeholder="Enter your phone number"
                     >
                   </div>
 
-                  <div>
+                  <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Address</label>
                     <input 
                       type="text" 
-                      v-model="person.address" 
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      v-model="person.address"
+                      class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 placeholder-orange-300"
+                      placeholder="Enter your address"
                     >
                   </div>
 
-                  <div>
+                  <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Gender</label>
                     <select 
                       v-model="person.gender"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 bg-white"
                     >
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                     </select>
                   </div>
                 </div>
-
 
                 <div class="flex justify-end space-x-4 pt-4">
                   <button 
@@ -626,6 +630,40 @@ select {
 
   select:focus {
     border-color: #f97316;
+  }
+}
+
+/* Input styling */
+input, select {
+  background-color: #fff8f3;
+}
+
+input:focus, select:focus {
+  background-color: white;
+}
+
+/* Dark mode support for inputs */
+@media (prefers-color-scheme: dark) {
+  input, select {
+    background-color: #2d1810;
+    color: #fed7aa;
+  }
+  
+  input::placeholder {
+    color: #fdba74;
+  }
+  
+  input:focus, select:focus {
+    background-color: #431a03;
+  }
+  
+  label {
+    color: #fed7aa;
+  }
+  
+  select option {
+    background-color: #2d1810;
+    color: #fed7aa;
   }
 }
 </style> 

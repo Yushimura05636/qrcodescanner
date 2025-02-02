@@ -55,7 +55,7 @@
                 type="text" 
                 id="studentId"
                 v-model="studentId"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="Student ID"
                 required
               >
@@ -65,10 +65,10 @@
             <div class="mb-3 py-3">
               <input 
                 type="text" 
-                id="qrCode"
-                v-model="qrCode"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="QR Code String"
+                id="qr_code"
+                v-model="qr_code"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
+                placeholder="QR Code"
                 required
               >
             </div>
@@ -79,7 +79,7 @@
                 type="text" 
                 id="firstname"
                 v-model="firstname"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="First Name"
                 required
               >
@@ -91,7 +91,7 @@
                 type="text" 
                 id="lastname"
                 v-model="lastname"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="Last Name"
                 required
               >
@@ -103,7 +103,7 @@
                 type="email" 
                 id="email"
                 v-model="email"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="Email"
                 required
               >
@@ -126,8 +126,9 @@
             <div class="mb-3 py-3">
               <input 
                 type="password" 
-                v-model="newPassword"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                id="password"
+                v-model="password"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                 placeholder="New Password"
                 required
               >
@@ -137,9 +138,10 @@
             <div class="mb-3 py-3">
               <input 
                 type="password" 
+                id="confirmPassword"
                 v-model="confirmPassword"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="Confirm Password"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
+                placeholder="Confirm New Password"
                 required
               >
             </div>
@@ -232,11 +234,11 @@ export default {
   data() {
     return {
       studentId: '',
-      qrCode: '',
+      qr_code: '',
       firstname: '',
       lastname: '',
       email: '',
-      newPassword: '',
+      password: '',
       confirmPassword: '',
       isValidated: false,
       showSuccess: false,
@@ -249,7 +251,7 @@ export default {
       try {
         const response = await axios.post(`${API_URL}/validate_forgot_password`, {
           user_id: this.studentId,
-          qr_code: this.qrCode,
+          qr_code: this.qr_code,
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email
@@ -271,14 +273,14 @@ export default {
 
     async handlePasswordReset() {
       try {
-        if (this.newPassword !== this.confirmPassword) {
+        if (this.password !== this.confirmPassword) {
           throw new Error('Passwords do not match');
         }
 
         const response = await axios.post(`${API_URL}/reset_password`, {
           user_id: this.studentId,
           email: this.email,
-          password: this.newPassword
+          password: this.password
         });
 
         console.log(response.data);
@@ -342,6 +344,31 @@ export default {
   nav a {
     font-size: 0.875rem;
     padding: 0.5rem 1rem;
+  }
+}
+
+/* Input styling */
+input {
+  background-color: #f8fafc;
+}
+
+input:focus {
+  background-color: white;
+}
+
+/* Dark mode support for inputs */
+@media (prefers-color-scheme: dark) {
+  input {
+    background-color: #1e293b;
+    color: #e2e8f0;
+  }
+  
+  input::placeholder {
+    color: #64748b;
+  }
+  
+  input:focus {
+    background-color: #0f172a;
   }
 }
 </style>

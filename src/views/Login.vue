@@ -62,7 +62,7 @@
                 type="email" 
                 id="email"
                 v-model="email"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 placeholder-orange-300"
                 placeholder="Email"
                 required
               >
@@ -74,7 +74,7 @@
                 type="password" 
                 id="password"
                 v-model="password"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-orange-900 placeholder-orange-300"
                 placeholder="Password"
                 required
               >
@@ -322,5 +322,30 @@ export default {
 .animate-logo {
   opacity: 0;
   animation: logoAppear 0.6s ease-out forwards;
+}
+
+/* Input styling */
+input {
+  background-color: #fff8f3;
+}
+
+input:focus {
+  background-color: white;
+}
+
+/* Dark mode support for inputs */
+@media (prefers-color-scheme: dark) {
+  input {
+    background-color: #2d1810;
+    color: #fed7aa;
+  }
+  
+  input::placeholder {
+    color: #fdba74;
+  }
+  
+  input:focus {
+    background-color: #431a03;
+  }
 }
 </style>

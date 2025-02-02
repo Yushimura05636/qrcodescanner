@@ -242,7 +242,7 @@
                   <input 
                     type="text" 
                     v-model="profileForm.firstname"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                   >
                 </div>
                 <div>
@@ -250,7 +250,7 @@
                   <input 
                     type="text" 
                     v-model="profileForm.lastname"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                   >
                 </div>
                 <div>
@@ -258,7 +258,7 @@
                   <input 
                     type="email" 
                     v-model="profileForm.email"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                   >
                 </div>
                 <div>
@@ -266,7 +266,7 @@
                   <input 
                     type="tel" 
                     v-model="profileForm.phone"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                   >
                 </div>
                 <div class="md:col-span-2">
@@ -274,7 +274,7 @@
                   <input 
                     type="text" 
                     v-model="profileForm.address"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
                   >
                 </div>
               </div>
@@ -299,7 +299,8 @@
                 <input 
                   type="password" 
                   v-model="passwordForm.currentPassword"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
+                  placeholder="Enter current password"
                 >
               </div>
               <div>
@@ -307,7 +308,8 @@
                 <input 
                   type="password" 
                   v-model="passwordForm.newPassword"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
+                  placeholder="Enter new password"
                 >
               </div>
               <div>
@@ -315,7 +317,8 @@
                 <input 
                   type="password" 
                   v-model="passwordForm.confirmPassword"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  class="mt-1 block w-full px-3 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 text-blue-900 placeholder-blue-400"
+                  placeholder="Confirm new password"
                 >
               </div>
               <div class="flex justify-end">
@@ -811,6 +814,35 @@ button,
   
   .bg-red-100 {
     background-color: rgba(248, 113, 113, 0.2);
+  }
+}
+
+/* Input styling */
+input {
+  background-color: #f8fafc;
+}
+
+input:focus {
+  background-color: white;
+}
+
+/* Dark mode support for inputs */
+@media (prefers-color-scheme: dark) {
+  input {
+    background-color: #1e293b;
+    color: #e2e8f0;
+  }
+  
+  input::placeholder {
+    color: #64748b;
+  }
+  
+  input:focus {
+    background-color: #0f172a;
+  }
+  
+  label {
+    color: #e2e8f0;
   }
 }
 </style>
