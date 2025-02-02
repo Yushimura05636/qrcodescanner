@@ -368,6 +368,35 @@
         </div>
       </div>
     </div>
+
+    <!-- Add this error modal right before closing the main div -->
+    <div v-if="showErrorModal" 
+         class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 transform animate-popup shadow-2xl">
+        <div class="text-center">
+          <!-- Error Icon Container -->
+          <div class="flex">
+            <div class="flex-auto"></div>
+            <div class="mx-auto w-24 h-24 rounded-full bg-red-100 mb-6 flex items-center justify-center overflow-hidden">
+              <img 
+                src="../assets/img/Logo.png" 
+                alt="Error Logo" 
+                class="w-16 h-16 object-contain animate-logo"
+              />
+            </div>
+            <div class="flex-auto"></div>
+          </div>
+          <h3 class="text-xl font-medium text-gray-900 mb-2">No User Exists</h3>
+          <p class="text-sm text-gray-500 mb-6">The scanned QR code is not associated with any user.</p>
+          <button 
+            @click="closeErrorModal" 
+            class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-all duration-200 font-medium"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -403,6 +432,7 @@ export default {
       totalTimeOut: 0,
       showSuccessModal: false,
       timeMessage: '',
+      showErrorModal: false,
     }
   },
   async created() {
@@ -481,8 +511,10 @@ export default {
           }
         } else {
           console.log('No user found for QR code:', decodedText);
-          this.error = 'No user found';
-          this.userData = null;
+          this.showErrorModal = true;
+          if (this.scanner) {
+            await this.scanner.clear();
+          }
         }
       } catch (error) {
         console.error('Error details:', error);
@@ -648,6 +680,10 @@ export default {
       this.timeMessage = '';
       // Resume scanning after closing modal
       this.$refs.scanner.startScanning();
+    },
+    closeErrorModal() {
+      this.showErrorModal = false;
+      this.restartScanner();
     },
   },
   watch: {
