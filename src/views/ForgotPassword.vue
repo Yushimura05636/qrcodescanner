@@ -172,10 +172,16 @@
       <div class="absolute inset-0 bg-black opacity-50"></div>
       <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
         <div class="text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-            <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
+          <div class="flex items-center justify-center">
+            <div class="flex-auto"></div>
+            <div class="mx-auto w-24 h-24 rounded-full bg-orange-100 mb-6 flex items-center justify-center overflow-hidden">
+              <img 
+                src="../assets/img/Logo.png" 
+                alt="Success Logo" 
+                class="w-16 h-16 object-contain animate-logo"
+              />
+            </div>
+            <div class="flex-auto"></div>
           </div>
           <h3 class="text-lg font-medium text-gray-900 mb-2">Password Reset Successful!</h3>
           <p class="text-sm text-gray-500 mb-4">Your password has been successfully reset.</p>
