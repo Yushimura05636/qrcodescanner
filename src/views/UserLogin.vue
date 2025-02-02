@@ -137,10 +137,12 @@
         <div class="text-center">
           <div class="flex items-center justify-center">
             <div class="flex-auto"></div>
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
-            <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4 overflow-hidden">
+              <img 
+                src="../assets/img/Logo.png" 
+                alt="Success Logo" 
+                class="h-8 w-8 object-contain animate-logo"
+              />
             </div>
             <div class="flex-auto"></div>
           </div>
@@ -314,5 +316,24 @@ export default {
   to {
     opacity: 1;
   }
+}
+
+@keyframes logoAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-20deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+.animate-logo {
+  opacity: 0;
+  animation: logoAppear 0.6s ease-out forwards;
 }
 </style>

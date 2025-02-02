@@ -139,13 +139,14 @@
       <div class="absolute inset-0 bg-black opacity-50"></div>
       <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
         <div class="text-center">
-          <!-- Success Icon -->
           <div class="flex items-center justify-center">
             <div class="flex-auto"></div>
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-              <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4 overflow-hidden">
+              <img 
+                src="../assets/img/Logo.png" 
+                alt="Success Logo" 
+                class="h-8 w-8 object-contain animate-logo"
+              />
             </div>
             <div class="flex-auto"></div>
           </div>
@@ -161,10 +162,14 @@
       <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
         <div class="text-center">
           <!-- Error Icon -->
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-            <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex">
+            <div class="flex-auto"></div>
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+              <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
+            </div>
+            <div class="flex-auto"></div>
           </div>
           <h3 class="text-lg font-medium text-gray-900 mb-2">Login Failed</h3>
           <p class="text-sm text-gray-500 mb-4">{{ errorMessage }}</p>
@@ -298,5 +303,24 @@ export default {
   to {
     opacity: 1;
   }
+}
+
+@keyframes logoAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-20deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+.animate-logo {
+  opacity: 0;
+  animation: logoAppear 0.6s ease-out forwards;
 }
 </style>
