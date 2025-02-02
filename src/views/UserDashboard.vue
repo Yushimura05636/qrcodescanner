@@ -144,7 +144,7 @@
                       </svg>
                     </button>
                   </div>
-                  <div class="flex justify-center items-center">
+                  <div class="flex flex-col items-center gap-4">
                     <qrcode-vue 
                       :value="qrCodeUrl" 
                       :size="window.innerWidth < 768 ? Math.min(window.innerWidth - 80, 300) : 400" 
@@ -152,6 +152,12 @@
                       render-as="svg"
                       class="w-full h-full"
                     />
+                    <button 
+                      @click="downloadQR"
+                      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                    >
+                      Save QR
+                    </button>
                   </div>
                 </div>
               </div>
@@ -479,7 +485,7 @@ export default {
     } catch (error) {
       console.error('Validation error:', error);
       this.loading = false;
-      this.$router.push('/user-login');
+      this.$router.push('/user_login');
     }
   },
   mounted() {
@@ -653,6 +659,26 @@ export default {
     closeErrorModal() {
       this.showErrorModal = false;
       this.errorMessage = '';
+    },
+    downloadQR() {
+      const svg = document.querySelector('#qr-modal svg');
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        const link = document.createElement('a');
+        link.download = 'qr-code.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
+      
+      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
     }
   }
 }
