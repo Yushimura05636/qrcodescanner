@@ -359,12 +359,12 @@
           <p class="text-sm text-gray-500 mb-6">
             {{ timeMessage }}
           </p>
-          <button 
+          <!-- <button 
             @click="closeSuccessModal" 
             class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-all duration-200 font-medium"
           >
             OK
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
