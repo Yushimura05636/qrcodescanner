@@ -10,7 +10,7 @@
     </div>
 
     <!-- Header Banner -->
-    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full flex items-center justify-between relative" style="z-index: 1;">
+    <div class="h-30 bg-gradient-to-r from-blue-500 to-blue-600 w-full flex items-center justify-between relative" style="z-index: 1;">
       <!-- Left side: Logo and Title -->
       <div class="flex items-center ml-8">
         <svg 
@@ -32,18 +32,11 @@
       <!-- Right side: Navigation -->
       <nav class="flex items-center mr-8">
         <router-link 
-          to="/login" 
+          to="/user-login" 
           class="px-3 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
-          :class="{ 'opacity-75 font-semibold': $route.path === '/login' }"
+          :class="{ 'opacity-75 font-semibold': $route.path === '/user-login' }"
         >
-          Login
-        </router-link>
-        <router-link 
-          to="/register" 
-          class="px-3 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
-          :class="{ 'opacity-75 font-semibold': $route.path === '/register' }"
-        >
-          Register
+          User Login
         </router-link>
       </nav>
     </div>
@@ -53,7 +46,7 @@
       <!-- Form Section (Left) -->
       <div class="bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md relative">
         <div class="p-8 relative">
-          <h2 class="text-xl font-bold text-gray-900 mb-8">Login to Your Account</h2>
+          <h2 class="text-xl font-bold text-gray-900 mb-8">Login as User</h2>
           
           <form class="space-y-4" @submit.prevent="handleLogin">
             <!-- Email -->
@@ -62,7 +55,7 @@
                 type="email" 
                 id="email"
                 v-model="email"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Email"
                 required
               >
@@ -74,17 +67,17 @@
                 type="password" 
                 id="password"
                 v-model="password"
-                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Password"
                 required
               >
             </div>
 
             <!-- Forgot Password Link -->
-            <div class="flex items-center justify-end py-2">
+            <div class="flex items-center justify-end mb-2">
               <a 
                 href="#" 
-                class="text-xs text-orange-600 hover:text-orange-700 font-medium transition-colors duration-200"
+                class="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
               >
                 Forgot Password?
               </a>
@@ -93,28 +86,31 @@
             <!-- Login Button -->
             <button 
               type="submit" 
-              class="w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200 font-medium text-sm mt-6"
+              class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 font-medium text-sm mt-6"
             >
               Login
             </button>
 
-            <!-- Login as User Link -->
+            <!-- Admin Login Link -->
             <div class="text-center mt-4">
-              <a 
-                href="/user_login" 
-                class="text-xs text-orange-600 hover:text-orange-700 font-medium transition-colors duration-200"
+              <router-link 
+                to="/login" 
+                class="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
               >
-                Login as User
-              </a>
+                Login as Admin
+              </router-link>
             </div>
 
-            <!-- Register Link
+            <!-- Register Link -->
             <p class="text-center text-xs text-gray-600 mt-4">
               Don't have an account? 
-              <router-link to="/register" class="font-medium text-orange-600 hover:text-orange-500">
+              <router-link 
+                to="/register" 
+                class="font-medium text-blue-600 hover:text-blue-500"
+              >
                 Sign up
               </router-link>
-            </p> -->
+            </p>
           </form>
         </div>
       </div>
@@ -132,16 +128,15 @@
     </div>
 
     <!-- Footer Banner -->
-    <div class="h-30 bg-gradient-to-r from-orange-500 to-orange-600 w-full mt-auto relative" style="z-index: 1;"></div>
+    <div class="h-30 bg-gradient-to-r from-blue-500 to-blue-600 w-full mt-auto relative" style="z-index: 1;"></div>
 
     <!-- Success Popup Modal -->
     <div v-if="showSuccess" class="fixed inset-0 flex items-center justify-center z-50">
       <div class="absolute inset-0 bg-black opacity-50"></div>
       <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
         <div class="text-center">
-          <!-- Success Icon -->
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-            <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+            <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
@@ -156,7 +151,6 @@
       <div class="absolute inset-0 bg-black opacity-50"></div>
       <div class="bg-white rounded-lg p-8 shadow-xl relative z-10 max-w-sm w-full mx-4">
         <div class="text-center">
-          <!-- Error Icon -->
           <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
             <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -178,7 +172,7 @@
 
 <script>
 export default {
-  name: 'Login',
+  name: 'UserLogin',
   data() {
     return {
       email: '',
@@ -197,7 +191,7 @@ export default {
         this.errorMessage = '';
 
         // Your login API call here
-        const response = await fetch('https://qrscannerdb-production.up.railway.app/api/login', {
+        const response = await fetch('https://qrscannerdb-production.up.railway.app/api/user_login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -207,25 +201,32 @@ export default {
             password: this.password
           })
         });
-        
+
         const data = await response.json();
-        
-        
+        console.log('user login data:',data);
+
         if (!response.ok) {
           throw new Error(data.message || 'Invalid credentials');
         }
-        
+
         // Show success popup
         this.showSuccess = true;
         
         // Store the token if your API returns one
-        if (data.data.token) {
-          localStorage.setItem('token', data.token);
+        if (data.token) {
+          localStorage.setItem('userToken', data.token);
         }
 
         // Redirect after a short delay
         setTimeout(() => {
-          this.$router.push('/scanner');
+          this.$router.push({
+            name: 'user_dashboard',
+            params: { id: data.user.id },
+            query: { 
+              email: data.user.email,
+              token: data.token 
+            }
+          });
         }, 2000);
 
       } catch (error) {

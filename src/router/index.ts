@@ -45,6 +45,17 @@ const routes: Array<RouteRecordRaw> = [
     path: '/view',
     name: 'view',
     component: () => import('../views/View.vue')
+  },
+  {
+    path: '/user_login',
+    name: 'user_login',
+    component: () => import('../views/UserLogin.vue')
+  },
+  {
+    path: '/user_dashboard/user/:id',
+    name: 'user_dashboard',
+    component: () => import('../views/UserDashboard.vue'),
+    props: true
   }
 ]
 

@@ -27,7 +27,7 @@
           class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
           :class="{ 'opacity-75 font-semibold': $route.path === '/scanner' }"
         >
-          Dashboard
+          Scanner
         </router-link>
         <router-link 
           to="/history" 
@@ -53,7 +53,8 @@
     </div>
 
     <!-- Main Content -->
-    <div class="max-w-7xl w-full px-4 sm:px-6 lg:px-8 mx-auto flex-grow">
+    <div class="max-w-7xl w-full px-4 sm:px-6 lg:px-8 mx-auto flex-grow overflow-y-auto custom-scrollbar" 
+     style="max-height: calc(100vh - 15rem);">
       <div class="relative -mt-24 flex flex-col items-center">
         <div class="bg-white rounded-xl shadow-md p-8 w-full mt-12">
           <table class="w-full border-collapse">
@@ -65,6 +66,7 @@
                 <th class="p-4 text-left bg-gray-50">Email</th>
                 <th class="p-4 text-left bg-gray-50">Phone</th>
                 <th class="p-4 text-left bg-gray-50">QR Code</th>
+                <th class="p-4 text-left bg-gray-50">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -104,6 +106,15 @@
                       render-as="canvas"
                     />
                   </div>
+                </td>
+                <td class="p-4">
+                  <button 
+                    @click="openProfile(person.id, $event)"
+                    class="edit-button"
+                  >
+                    <span class="button-text">Edit Profile</span>
+                    <span class="icon">📝</span>
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -155,6 +166,12 @@ export default {
     }
   },
   created() {
+    //check if there is token in local storage and if not it will redirect to login page
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.$router.push('/login');
+    }
+
     console.log('AboutView component created');
     this.getPeople();
   },

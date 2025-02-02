@@ -26,7 +26,7 @@
           to="/scanner" 
           class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
         >
-          Dashboard
+          Scanner
         </router-link>
         <router-link 
           to="/history" 
@@ -50,6 +50,109 @@
       </nav>
     </div>
     
+    <!-- empty div for spacing -->
+    <div class="h-10"></div>
+
+    <!-- Stats Section -->
+    <div class="max-w-4xl w-full px-4 sm:px-6 lg:px-8 mx-auto mt-8">
+      <div class="grid grid-cols-3 gap-6">
+
+        
+        <!-- Total Scans -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <div class="flex items-start">
+            <div class="p-3 rounded-full bg-blue-100">
+              <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+            </div>
+            <div class="ml-4 flex flex-col items-center flex-grow">
+              <h2 class="text-2xl font-semibold text-gray-900">{{ totalScans }}</h2>
+              <p class="text-gray-500 mt-1">Total Scans</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time In -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-100">
+              <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+            </div>
+            <div class="ml-4 flex flex-col items-center flex-grow">
+              <h2 class="text-2xl font-semibold text-gray-900">{{ totalTimeIn }}</h2>
+              <p class="text-gray-500 mt-1">Total Time In</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total Time Out -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <div class="flex items-start">
+            <div class="p-3 rounded-full bg-red-100">
+              <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </div>
+            <div class="ml-4 flex flex-col items-center flex-grow">
+              <h2 class="text-2xl font-semibold text-gray-900">{{ totalTimeOut }}</h2>
+              <p class="text-gray-500 mt-1">Total Time Out</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total Registered -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <div class="flex items-start">
+            <div class="p-3 rounded-full bg-blue-100">
+              <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div class="ml-4 flex flex-col items-center flex-grow">
+              <h2 class="text-2xl font-semibold text-gray-900">{{ totalRegistered }}</h2>
+              <p class="text-gray-500 mt-1">Total Registered</p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- empty div for spacing -->
+    <div class="h-10"></div>
+
+    <!-- Scanner Button -->
+    <button 
+      @click="showScanner = true"
+      class="mt-8 px-6 py-3 bg-orange-600 text-white rounded-xl font-medium hover:bg-orange-700 transition-colors duration-200"
+    >
+      Open Scanner
+    </button>
+
+    <!-- Scanner Modal -->
+    <div v-if="showScanner" 
+         class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-8 max-w-xl w-full mx-4">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-semibold text-gray-900">QR Scanner</h3>
+          <button 
+            @click="closeScanner"
+            class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-4">
+          <div id="reader" class="overflow-hidden rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Content -->
     <div class="max-w-4xl w-full px-4 sm:px-6 lg:px-8 mx-auto flex-grow">
       <div class="relative -mt-24 flex flex-col items-center">
@@ -127,6 +230,14 @@
             <div class="bg-white rounded-lg p-4">
               <p class="text-sm text-gray-500 pb-1">QR Code</p>
               <p class="text-gray-900 font-medium font-mono text-sm pt-1">{{ userData.qr_code }}</p>
+            </div>
+            <div class="bg-white rounded-lg p-4">
+              <p class="text-sm text-gray-500 pb-1">Student Id</p>
+              <p class="text-gray-900 font-medium font-mono text-sm pt-1">{{ userData.id }}</p>
+            </div>
+            <div class="bg-white rounded-lg p-4">
+              <p class="text-sm text-gray-500 pb-1">Qr Image</p>
+              <qrcode-vue :value="userData.qr_code" :size="40" level="H"></qrcode-vue>
             </div>
           </div>
         </div>
@@ -221,11 +332,15 @@
 </template>
 
 <script>
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import axios from 'axios';
+import QrcodeVue from 'qrcode.vue'
 
 export default {
   name: 'QrScanner',
+  components: {
+    QrcodeVue
+  },
   data() {
     return {
       scanner: null,
@@ -238,10 +353,28 @@ export default {
       successMessage: '',
       showError: false,
       errorTitle: '',
-      errorMessage: ''
+      errorMessage: '',
+      showScanner: false,
+      totalScans: 0,
+      totalRegistered: 0,
+      totalTimeIn: 0,
+      totalTimeOut: 0
     }
   },
+  async created() {
+    await this.fetchStats();
+    // Auto-open scanner
+    setTimeout(() => {
+      this.showScanner = true;
+    }, 500);
+  },
   mounted() {
+    //check if there is token in local storage and if not it will redirect to login page
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.$router.push('/login');
+    }
+
     // Initialize scanner immediately
     this.$nextTick(() => {
       this.initScanner();
@@ -254,15 +387,20 @@ export default {
   },
   methods: {
     initScanner() {
+      if (!this.showScanner) return;
+      
       console.log('Initializing scanner...');
       try {
         this.scanner = new Html5QrcodeScanner('reader', {
           qrbox: { width: 250, height: 250 },
-          fps: 20,
+          fps: 10,
+          formatsToSupport: [
+            Html5QrcodeSupportedFormats.QR_CODE
+          ],
           rememberLastUsedCamera: true,
-          showTorchButtonIfSupported: true
+          showTorchButtonIfSupported: true,
+          aspectRatio: 1.0
         });
-        console.log('Scanner created:', this.scanner);
         this.scanner.render(this.onScanSuccess, this.onScanError);
       } catch (error) {
         console.error('Scanner initialization error:', error);
@@ -313,9 +451,11 @@ export default {
     },
     async handleTimeIn() {
       await this.handleTimeRecord('Time In');
+      window.location.reload();
     },
     async handleTimeOut() {
       await this.handleTimeRecord('Time Out');
+      window.location.reload();
     },
     async handleTimeRecord(description) {
       try {
@@ -391,6 +531,48 @@ export default {
       localStorage.removeItem('user')
       window.location.href = '/login'
     },
+    async fetchStats() {
+      try {
+        const response = await axios.get('https://qrscannerdb-production.up.railway.app/api/call/history/scan/0');
+        const history = response.data;
+        
+        this.totalScans = history.length;
+        let timeInCount = 0;
+        let timeOutCount = 0;
+        
+        console.log(response.data);
+        
+        this.totalScans = response.data.total_scan;
+        this.totalTimeIn = response.data.total_time_in;
+        this.totalTimeOut = response.data.total_time_out;
+        this.totalRegistered = response.data.total_registered;
+        
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+        this.totalScans = 0;
+        this.totalTimeIn = 0;
+        this.totalTimeOut = 0;
+        this.totalRegistered = 0;
+      }
+    },
+    closeScanner() {
+      if (this.scanner) {
+        this.scanner.clear();
+      }
+      this.showScanner = false;
+      this.userData = null;
+      this.error = null;
+      this.scannedResult = null;
+    }
+  },
+  watch: {
+    showScanner(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          this.initScanner();
+        });
+      }
+    }
   }
 }
 </script>

@@ -27,7 +27,7 @@
           class="px-4 py-2 text-sm font-medium text-white hover:opacity-75 transition-all duration-200"
           :class="{ 'opacity-75 font-semibold': $route.path === '/scanner' }"
         >
-          Dashboard
+          Scanner
         </router-link>
         <router-link 
           to="/history" 
@@ -65,8 +65,12 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
-                  <th>Description</th>
-                  <th>Date & Time</th>
+                  <th @click="sort('description')" class="cursor-pointer hover:bg-gray-100">
+                    Description {{ getSortIcon('description') }}
+                  </th>
+                  <th @click="sort('datetime')" class="cursor-pointer hover:bg-gray-100">
+                    Date & Time {{ getSortIcon('datetime') }}
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -141,21 +145,48 @@ export default {
       error: null,
       maleImage: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/male/45.png',
       femaleImage: 'https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/45.png',
-      showSuccess: false
+      showSuccess: false,
+      sortKey: '',
+      sortOrder: 'asc'
     }
   },
   computed: {
     combinedHistory() {
-      return this.history.map(record => {
+      let sorted = this.history.map(record => {
         const personDetails = this.people.find(person => person.id === record.person_id);
         return {
           ...record,
           personDetails
         };
       });
+
+      // Apply sorting if sortKey is set
+      if (this.sortKey) {
+        sorted = sorted.sort((a, b) => {
+          let aValue = a[this.sortKey];
+          let bValue = b[this.sortKey];
+
+          // Convert dates for comparison if sorting by datetime
+          if (this.sortKey === 'datetime') {
+            aValue = new Date(aValue);
+            bValue = new Date(bValue);
+          }
+
+          if (aValue < bValue) return this.sortOrder === 'asc' ? -1 : 1;
+          if (aValue > bValue) return this.sortOrder === 'asc' ? 1 : -1;
+          return 0;
+        });
+      }
+
+      return sorted;
     }
   },
   created() {
+    //check if there is token in local storage and if not it will redirect to login page
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.$router.push('/login');
+    }
     this.fetchAllData();
   },
   methods: {
@@ -217,6 +248,19 @@ export default {
       setTimeout(() => {
         this.showSuccess = false
       }, 2000) // Hide after 2 seconds to match login/register
+    },
+    sort(key) {
+      // If clicking the same key, reverse the order
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'asc';
+      }
+    },
+    getSortIcon(key) {
+      if (this.sortKey !== key) return '↕️';
+      return this.sortOrder === 'asc' ? '↑' : '↓';
     }
   }
 }
@@ -413,6 +457,23 @@ tr:hover td {
 
   .edit-button {
     padding: 6px 10px;
+  }
+}
+
+/* Add these new styles */
+th.cursor-pointer {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+th.cursor-pointer:hover {
+  background-color: #f3f4f6;
+}
+
+@media (prefers-color-scheme: dark) {
+  th.cursor-pointer:hover {
+    background-color: #374151;
   }
 }
 </style> 

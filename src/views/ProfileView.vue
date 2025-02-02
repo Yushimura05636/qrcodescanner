@@ -26,7 +26,7 @@
           to="/scanner" 
           class="nav-link px-4 py-2 text-sm font-medium text-white hover:text-orange-100 transition-all duration-200"
         >
-          Dashboard
+          Scanner
         </router-link>
         <router-link 
           to="/history" 
@@ -71,13 +71,11 @@
                 @click="showQrModal = true"
               >
                 <qrcode-vue 
+                  ref="qrCode"
                   :value="person.qr_code"
-                  :size="180"
+                  :size="192"
                   level="H"
-                  render-as="canvas"
-                  :background="'#ffffff'"
-                  :foreground="'#000000'"
-                  class="w-full h-full object-contain"
+                  render-as="svg"
                 />
               </div>
               <p class="text-sm text-gray-600">Click QR to enlarge</p>
@@ -193,19 +191,17 @@
         
         <div class="w-64 h-64 bg-white rounded-lg shadow-md p-2">
           <qrcode-vue 
+            ref="qrCode"
             :value="person.qr_code"
             :size="240"
             level="H"
-            render-as="canvas"
-            :background="'#ffffff'"
-            :foreground="'#000000'"
-            class="qr-code-large"
+            render-as="svg"
           />
         </div>
         <p class="text-sm text-gray-600 break-all max-w-md text-center">{{ person.qr_code }}</p>
         <button 
           @click="downloadQR"
-          class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
         >
           Download QR
         </button>
@@ -257,6 +253,12 @@ export default {
     }
   },
   async created() {
+    //check if there is token in local storage and if not it will redirect to login page
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.$router.push('/login');
+    }
+
     try {
       // Check for both query parameter and route parameter
       const queryId = this.$route.query.id;
@@ -326,23 +328,39 @@ export default {
         this.saving = false;
       }
     },
-    async downloadQR() {
-      try {
-        const response = await fetch(
-          `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(this.person.qr_code)}`
-        );
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `qr-code-${this.person.firstname}-${this.person.lastname}.png`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } catch (error) {
-        console.error('Failed to download QR code:', error);
-      }
+    downloadQR() {
+      // Get the SVG element
+      const svgElement = this.$refs.qrCode.$el;
+      
+      // Create a canvas with the same size as the enlarged QR
+      const canvas = document.createElement('canvas');
+      canvas.width = 400;  // Match the enlarged size
+      canvas.height = 400; // Match the enlarged size
+      
+      // Convert SVG to data URL
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      
+      // Create image and draw to canvas
+      const img = new Image();
+      img.onload = () => {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Convert to PNG and download
+        const pngUrl = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.href = pngUrl;
+        downloadLink.download = 'qr-code.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
     },
     logout() {
       // Clear local storage
