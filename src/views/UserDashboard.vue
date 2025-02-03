@@ -127,7 +127,7 @@
               <!-- Enlarged QR Code Modal -->
               <div 
                 v-if="showEnlargedQR" 
-                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                class="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4"
                 @click="showEnlargedQR = false"
               >
                 <div 
@@ -661,24 +661,11 @@ export default {
       this.errorMessage = '';
     },
     downloadQR() {
-      const svg = document.querySelector('#qr-modal svg');
-      const svgData = new XMLSerializer().serializeToString(svg);
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+      try {
         
-        const link = document.createElement('a');
-        link.download = 'qr-code.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      };
-      
-      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+      } catch (error) {
+        console.error('Error in downloadQR:', error);
+      }
     }
   }
 }
